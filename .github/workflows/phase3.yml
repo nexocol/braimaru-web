@@ -1,0 +1,171 @@
+name: Phase 3 validation
+
+on:
+  push:
+    branches:
+      - feat/v1-data-admin
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+
+      - name: Install
+        run: npm install --no-audit --no-fund
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Apply local D1 migrations
+        run: npm run db:migrate:local
+
+      - name: Seed local D1
+        run: npm run db:seed:local
+
+      - name: Start local Workers runtime
+        run: |
+          CLOUDFLARE_VITE_WRANGLER_CONFIG_PATH=wrangler.local.jsonc npm run dev -- --host 127.0.0.1 --port 8787 > /tmp/braimaru-dev.log 2>&1 &
+          echo $! > /tmp/braimaru-dev.pid
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8787/api/health > /tmp/health.json; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/braimaru-dev.log
+          exit 1
+
+      - name: Test public API
+        run: |
+          curl --fail --silent http://127.0.0.1:8787/api/products > /tmp/products.json
+          curl --fail --silent http://127.0.0.1:8787/api/categories > /tmp/categories.json
+          curl --fail --silent http://127.0.0.1:8787/api/site > /tmp/site.json
+
+          node - <<'NODE'
+          const fs = require('fs');
+          const products = JSON.parse(fs.readFileSync('/tmp/products.json', 'utf8')).products;
+          const categories = JSON.parse(fs.readFileSync('/tmp/categories.json', 'utf8')).categories;
+          const site = JSON.parse(fs.readFileSync('/tmp/site.json', 'utf8')).settings;
+
+          if (products.length !== 3) throw new Error(`Expected 3 seeded products, got ${products.length}`);
+          if (!products.every((product) => product.active === true)) throw new Error('Public API returned inactive product');
+          if (categories.length !== 3) throw new Error(`Expected 3 categories, got ${categories.length}`);
+          if (!Object.prototype.hasOwnProperty.call(site, 'whatsapp_phone')) throw new Error('Missing whatsapp_phone setting');
+          NODE
+
+      - name: Test admin CRUD and R2 media lifecycle
+        run: |
+          printf 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl7lWQAAAAASUVORK5CYII=' | base64 --decode > /tmp/image-a.png
+          cp /tmp/image-a.png /tmp/image-b.png
+
+          curl --fail --silent             -X POST             -H 'content-type: image/png'             --data-binary @/tmp/image-a.png             http://127.0.0.1:8787/api/admin/media > /tmp/media-a.json
+
+          KEY_A=$(node -p "JSON.parse(require('fs').readFileSync('/tmp/media-a.json','utf8')).key")
+          curl --fail --silent "http://127.0.0.1:8787/media/$KEY_A" > /tmp/read-a.png
+
+          cat > /tmp/create.json <<JSON
+          {
+            "name": "Producto prueba CI",
+            "slug": "producto-prueba-ci",
+            "category_id": "jabones",
+            "short_description": "Registro temporal para validar el flujo administrativo.",
+            "description": null,
+            "benefits": ["Prueba"],
+            "price_cop": null,
+            "image_key": "$KEY_A",
+            "ritual_tags": [],
+            "featured": false,
+            "active": true,
+            "sort_order": 90
+          }
+          JSON
+
+          curl --fail --silent             -X POST             -H 'content-type: application/json'             --data @/tmp/create.json             http://127.0.0.1:8787/api/admin/products > /tmp/created.json
+
+          PRODUCT_ID=$(node -p "JSON.parse(require('fs').readFileSync('/tmp/created.json','utf8')).product.id")
+
+          curl --fail --silent             -X POST             -H 'content-type: image/png'             --data-binary @/tmp/image-b.png             http://127.0.0.1:8787/api/admin/media > /tmp/media-b.json
+
+          KEY_B=$(node -p "JSON.parse(require('fs').readFileSync('/tmp/media-b.json','utf8')).key")
+
+          cat > /tmp/update-hidden.json <<JSON
+          {
+            "name": "Producto prueba CI editado",
+            "slug": "producto-prueba-ci",
+            "category_id": "jabones",
+            "short_description": "Registro temporal editado.",
+            "description": null,
+            "benefits": ["Prueba editada"],
+            "price_cop": 49900,
+            "image_key": "$KEY_B",
+            "ritual_tags": ["exfoliar"],
+            "featured": true,
+            "active": false,
+            "sort_order": 91
+          }
+          JSON
+
+          curl --fail --silent             -X PUT             -H 'content-type: application/json'             --data @/tmp/update-hidden.json             "http://127.0.0.1:8787/api/admin/products/$PRODUCT_ID" > /tmp/updated-hidden.json
+
+          STATUS_OLD=$(curl --silent --output /dev/null --write-out '%{http_code}' "http://127.0.0.1:8787/media/$KEY_A")
+          test "$STATUS_OLD" = "404"
+
+          node - <<'NODE'
+          const fs = require('fs');
+          const product = JSON.parse(fs.readFileSync('/tmp/updated-hidden.json', 'utf8')).product;
+          if (product.active !== false) throw new Error('Deactivate flow failed');
+          if (product.featured !== true) throw new Error('Featured update failed');
+          if (product.sort_order !== 91) throw new Error('Order update failed');
+          if (product.price_cop !== 49900) throw new Error('Price update failed');
+          NODE
+
+          node -e "
+            const fs=require('fs');
+            const data=JSON.parse(fs.readFileSync('/tmp/update-hidden.json','utf8'));
+            data.active=true;
+            fs.writeFileSync('/tmp/update-active.json', JSON.stringify(data));
+          "
+
+          curl --fail --silent             -X PUT             -H 'content-type: application/json'             --data @/tmp/update-active.json             "http://127.0.0.1:8787/api/admin/products/$PRODUCT_ID" > /tmp/updated-active.json
+
+          node - <<'NODE'
+          const fs = require('fs');
+          const product = JSON.parse(fs.readFileSync('/tmp/updated-active.json', 'utf8')).product;
+          if (product.active !== true) throw new Error('Activate flow failed');
+          NODE
+
+          curl --fail --silent             -X DELETE             "http://127.0.0.1:8787/api/admin/products/$PRODUCT_ID" > /tmp/deleted.json
+
+          STATUS_NEW=$(curl --silent --output /dev/null --write-out '%{http_code}' "http://127.0.0.1:8787/media/$KEY_B")
+          test "$STATUS_NEW" = "404"
+
+          curl --fail --silent http://127.0.0.1:8787/api/admin/products > /tmp/admin-products-final.json
+          node - <<'NODE'
+          const fs = require('fs');
+          const products = JSON.parse(fs.readFileSync('/tmp/admin-products-final.json', 'utf8')).products;
+          if (products.some((product) => product.slug === 'producto-prueba-ci')) {
+            throw new Error('Delete flow failed');
+          }
+          NODE
+
+      - name: Dump runtime log on failure
+        if: failure()
+        run: cat /tmp/braimaru-dev.log || true
