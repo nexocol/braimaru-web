@@ -1,3 +1,4 @@
+import { AdminApp } from '../admin/AdminApp';
 import { Header } from '../components/Header/Header';
 import { useStorefrontData } from '../hooks/useStorefrontData';
 import { Footer } from '../layout/Footer/Footer';
@@ -9,7 +10,7 @@ import { Hero } from '../sections/Hero/Hero';
 import { Manifesto } from '../sections/Manifesto/Manifesto';
 import { RitualExplorer } from '../sections/RitualExplorer/RitualExplorer';
 
-export function App() {
+function StorefrontApp() {
   const storefront = useStorefrontData();
   const phone = storefront.site.whatsapp_phone;
 
@@ -55,4 +56,12 @@ export function App() {
       <Footer />
     </div>
   );
+}
+
+export function App() {
+  if (window.location.pathname === '/admin' || window.location.pathname.startsWith('/admin/')) {
+    return <AdminApp />;
+  }
+
+  return <StorefrontApp />;
 }
