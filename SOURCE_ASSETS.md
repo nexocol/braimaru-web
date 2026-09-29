@@ -2,24 +2,26 @@
 
 The complete client delivery was audited before implementation: 35 JPEG files across the two supplied ZIP archives.
 
-## Promoted V1 assets
+## Promoted assets
 
-| Web asset | Original source | V1 use |
+| Web asset | Original source | Use |
 |---|---|---|
 | `public/brand/braimaru-logo.webp` | ZIP B — `WhatsApp Image 2026-09-28 at 11.36.51 AM (1).jpeg` | brand / hero |
-| `public/products/aceite-corporal-01.webp` | ZIP A — `WhatsApp Image 2026-09-28 at 11.49.26 AM.jpeg` | hero / oil product / editorial |
+| `public/products/aceite-corporal-01.webp` | ZIP A — `WhatsApp Image 2026-09-28 at 11.49.26 AM.jpeg` | hero / body oil |
+| `public/products/shampoo-capilar-v11.webp` | crop from ZIP A — `WhatsApp Image 2026-09-28 at 11.51.57 AM.jpeg` | shampoo product |
+| `public/products/acondicionador-capilar-v11.webp` | crop from ZIP A — `WhatsApp Image 2026-09-28 at 11.51.57 AM.jpeg` | conditioner product |
+| `public/editorial/hair-line-v11.webp` | crop from ZIP A — `WhatsApp Image 2026-09-28 at 11.51.57 AM.jpeg` | capillary editorial / ritual |
+| `public/editorial/exfoliante-cafe-v11.webp` | crop from ZIP A — `WhatsApp Image 2026-09-28 at 11.51.54 AM (1).jpeg` | exfoliation editorial / ritual |
 
-## Verified product source kept as reference
+All V1.1 crops are deterministic reframes of original client photography. No product packaging was generated, rebuilt or altered.
 
-ZIP A — `WhatsApp Image 2026-09-28 at 11.51.57 AM.jpeg` confirms the capillary line used in V1 fixtures:
+## Verified capillary copy
+
+ZIP A — `WhatsApp Image 2026-09-28 at 11.51.57 AM.jpeg` confirms:
 
 - Shampoo — ortiga, manzanilla y canela — “Limpia · Fortalece · Nutre”.
 - Acondicionador — ortiga, manzanilla y canela — “Hidrata · Desenreda · Suaviza”.
 - Termoprotector — ortiga, manzanilla y canela — “Protege · Fortalece · Da brillo”.
-
-The V1 intentionally uses neutral media panels for shampoo and conditioner until a clean individual product image is promoted. It does not reuse body-oil imagery as capillary imagery.
-
-The old `tratamiento-capilar.webp` / `shampoo-capilar.webp` mappings were removed from active V1 use because their documented source mapping was not reliable enough for product representation.
 
 Exact duplicate detected:
 `WhatsApp Image 2026-09-28 at 11.47.56 AM.jpeg` and

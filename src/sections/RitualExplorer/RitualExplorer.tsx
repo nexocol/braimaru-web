@@ -6,15 +6,48 @@ interface RitualDefinition {
   id: RitualTag;
   label: string;
   copy: string;
-  image: string | null;
+  image: string;
+  imageAlt: string;
+  emptyCopy?: string;
 }
 
 const rituals: RitualDefinition[] = [
-  { id: 'hidratar', label: 'Hidratar', copy: 'El acondicionador identifica “Hidrata” entre sus beneficios visibles.', image: null },
-  { id: 'nutrir', label: 'Nutrir', copy: 'El shampoo identifica “Nutre” entre sus beneficios visibles.', image: null },
-  { id: 'exfoliar', label: 'Exfoliar', copy: 'Todavía no asociamos un producto a esta necesidad en la V1.', image: null },
-  { id: 'cuidado-corporal', label: 'Cuidado corporal', copy: 'Aceite corporal de canela y clavos de olor identificado en el material original.', image: '/products/aceite-corporal-01.webp' },
-  { id: 'cuidado-capilar', label: 'Cuidado capilar', copy: 'Shampoo y acondicionador identificados en la línea capilar BRAIMARÚ.', image: null },
+  {
+    id: 'hidratar',
+    label: 'Hidratar',
+    copy: 'Suavidad y cuidado para acompañar el cabello después de la limpieza.',
+    image: '/products/acondicionador-capilar-v11.webp',
+    imageAlt: 'Acondicionador capilar BRAIMARÚ',
+  },
+  {
+    id: 'nutrir',
+    label: 'Nutrir',
+    copy: 'Un gesto de cuidado capilar con ortiga, manzanilla y canela.',
+    image: '/products/shampoo-capilar-v11.webp',
+    imageAlt: 'Shampoo capilar BRAIMARÚ',
+  },
+  {
+    id: 'exfoliar',
+    label: 'Exfoliar',
+    copy: 'Una textura distinta para renovar el ritual de cuidado corporal.',
+    image: '/editorial/exfoliante-cafe-v11.webp',
+    imageAlt: 'Detalle de la línea exfoliante de café BRAIMARÚ',
+    emptyCopy: 'Explora la textura exfoliante de la línea BRAIMARÚ.',
+  },
+  {
+    id: 'cuidado-corporal',
+    label: 'Cuidado corporal',
+    copy: 'Aromas cálidos para acompañar un momento de cuidado propio.',
+    image: '/products/aceite-corporal-01.webp',
+    imageAlt: 'Aceite corporal BRAIMARÚ de canela y clavos de olor',
+  },
+  {
+    id: 'cuidado-capilar',
+    label: 'Cuidado capilar',
+    copy: 'Shampoo, acondicionador y termoprotector dentro de una misma línea de cuidado.',
+    image: '/editorial/hair-line-v11.webp',
+    imageAlt: 'Línea capilar BRAIMARÚ',
+  },
 ];
 
 interface RitualExplorerProps {
@@ -36,12 +69,21 @@ export function RitualExplorer({ products }: RitualExplorerProps) {
           <p className="eyebrow">Encuentra tu ritual</p>
           <h2>¿Qué necesita tu momento de cuidado?</h2>
         </div>
-        <p>Explora por intención. Cada asociación mostrada se limita a beneficios o categorías visibles en los assets recibidos.</p>
+        <p>
+          Empieza por una intención y descubre una forma distinta de acercarte a la selección
+          BRAIMARÚ.
+        </p>
       </div>
 
       <div className="ritual-tabs" role="tablist" aria-label="Necesidad de cuidado">
         {rituals.map((ritual) => (
-          <button key={ritual.id} type="button" role="tab" aria-selected={active === ritual.id} onClick={() => setActive(ritual.id)}>
+          <button
+            key={ritual.id}
+            type="button"
+            role="tab"
+            aria-selected={active === ritual.id}
+            onClick={() => setActive(ritual.id)}
+          >
             {ritual.label}
           </button>
         ))}
@@ -51,29 +93,26 @@ export function RitualExplorer({ products }: RitualExplorerProps) {
         <AnimatePresence mode="wait">
           <motion.div
             key={active}
-            className={current.image ? 'ritual-image' : 'ritual-image ritual-image-neutral'}
-            initial={{ opacity: 0, clipPath: 'inset(8% 0 8% 0)' }}
-            animate={{ opacity: 1, clipPath: 'inset(0% 0 0% 0)' }}
+            className="ritual-image"
+            initial={{ opacity: 0, clipPath: 'inset(7% 0 7% 0)', scale: 1.015 }}
+            animate={{ opacity: 1, clipPath: 'inset(0% 0 0% 0)', scale: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
           >
-            {current.image ? (
-              <img src={current.image} alt="" loading="lazy" />
-            ) : (
-              <>
-                <span className="neutral-brand">BRAIMARÚ</span>
-                <span className="neutral-note">Visual específico pendiente de respaldo</span>
-              </>
-            )}
+            <img src={current.image} alt={current.imageAlt} loading="lazy" />
           </motion.div>
         </AnimatePresence>
 
         <div className="ritual-content">
-          <span className="ritual-number">0{rituals.findIndex((ritual) => ritual.id === active) + 1}</span>
+          <span className="ritual-number">
+            0{rituals.findIndex((ritual) => ritual.id === active) + 1}
+          </span>
           <h3>{current.label}</h3>
           <p>{current.copy}</p>
           <div className="ritual-products">
-            {matched.length > 0 ? matched.map((product) => <span key={product.id}>{product.name}</span>) : <span>Sin producto asociado por ahora</span>}
+            {matched.length > 0
+              ? matched.map((product) => <span key={product.id}>{product.name}</span>)
+              : <span>{current.emptyCopy ?? 'Descubre este ritual con BRAIMARÚ.'}</span>}
           </div>
         </div>
       </div>
