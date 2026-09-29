@@ -34,8 +34,16 @@ export interface R2BucketLike {
   delete(key: string): Promise<void>;
 }
 
+export interface AssetFetcherLike {
+  fetch(request: Request): Promise<Response>;
+}
+
 export interface Env {
   DB?: D1DatabaseLike;
   MEDIA?: R2BucketLike;
+  ASSETS?: AssetFetcherLike;
   BRAIMARU_RESOURCE_MODE?: 'development' | 'preview' | 'production';
+  ADMIN_USERNAME?: string;
+  ADMIN_PASSWORD_HASH?: string;
+  ADMIN_SESSION_SECRET?: string;
 }

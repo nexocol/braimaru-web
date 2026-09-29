@@ -1,8 +1,44 @@
+import { getAdminAuthConfig } from './auth/config';
+import { getSessionFromRequest } from './auth/session';
 import { handleAdminApi } from './api/admin';
+import { handleAuthApi } from './api/auth';
 import { apiError, json } from './api/http';
 import { handlePublicApi } from './api/public';
 import { handlePublicMedia } from './media';
 import type { Env } from './types';
+
+function redirect(location: string) {
+  return new Response(null, {
+    status: 302,
+    headers: {
+      location,
+      'cache-control': 'no-store',
+    },
+  });
+}
+
+async function handleAdminDocument(request: Request, env: Env, pathname: string) {
+  if (!env.ASSETS) {
+    return apiError(500, 'assets_unavailable', 'Static assets binding is unavailable.');
+  }
+
+  const config = getAdminAuthConfig(env);
+  const session = config
+    ? await getSessionFromRequest(request, config.username, config.sessionSecret)
+    : null;
+
+  if (pathname === '/admin/login') {
+    if (session) return redirect('/admin');
+    return env.ASSETS.fetch(request);
+  }
+
+  if (pathname === '/admin' || pathname.startsWith('/admin/')) {
+    if (!session) return redirect('/admin/login');
+    return env.ASSETS.fetch(request);
+  }
+
+  return null;
+}
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -22,6 +58,11 @@ export default {
         });
       }
 
+      if (pathname.startsWith('/api/auth/')) {
+        const response = await handleAuthApi(request, env, pathname);
+        if (response) return response;
+      }
+
       if (pathname.startsWith('/api/admin/')) {
         const response = await handleAdminApi(request, env, pathname);
         if (response) return response;
@@ -34,6 +75,11 @@ export default {
 
       if (pathname.startsWith('/media/')) {
         const response = await handlePublicMedia(request, env, pathname);
+        if (response) return response;
+      }
+
+      if (pathname === '/admin' || pathname.startsWith('/admin/')) {
+        const response = await handleAdminDocument(request, env, pathname);
         if (response) return response;
       }
 

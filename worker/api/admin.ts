@@ -1,3 +1,5 @@
+import { getAdminAuthConfig } from '../auth/config';
+import { getSessionFromRequest } from '../auth/session';
 import {
   createProduct,
   deleteProduct,
@@ -11,29 +13,38 @@ import { validateProductInput } from '../validation';
 import { apiError, json, readJsonBody } from './http';
 import { serializeProduct } from './serializers';
 
-function hasAccessIdentity(request: Request) {
-  return Boolean(
-    request.headers.get('cf-access-authenticated-user-email') ||
-    request.headers.get('cf-access-jwt-assertion'),
-  );
-}
+async function requireAdminSession(request: Request, env: Env) {
+  const config = getAdminAuthConfig(env);
+  if (!config) {
+    return {
+      response: apiError(
+        503,
+        'auth_not_configured',
+        'La autenticación administrativa todavía no está configurada.',
+      ),
+    };
+  }
 
-function adminAllowed(request: Request, env: Env) {
-  const mode = env.BRAIMARU_RESOURCE_MODE ?? 'development';
-  if (mode === 'development') return true;
-  return hasAccessIdentity(request);
+  const session = await getSessionFromRequest(
+    request,
+    config.username,
+    config.sessionSecret,
+  );
+
+  if (!session) {
+    return {
+      response: apiError(401, 'authentication_required', 'Authentication required.'),
+    };
+  }
+
+  return { session };
 }
 
 export async function handleAdminApi(request: Request, env: Env, pathname: string) {
   if (!pathname.startsWith('/api/admin/')) return null;
 
-  if (!adminAllowed(request, env)) {
-    return apiError(
-      403,
-      'admin_protection_required',
-      'Administrative writes require Cloudflare Access in this environment.',
-    );
-  }
+  const auth = await requireAdminSession(request, env);
+  if ('response' in auth) return auth.response;
 
   if (!env.DB) {
     return apiError(503, 'database_unavailable', 'Admin database is not configured.');
