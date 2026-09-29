@@ -20,6 +20,12 @@
         "database_name": "braimaru-db-preview",
         "database_id": "c3909368-8c64-47e4-8bc4-88f2bb24d72a"
       }
+    ],
+    "r2_buckets": [
+      {
+        "binding": "MEDIA",
+        "bucket_name": "braimaru-media-preview"
+      }
     ]
   }
 }
