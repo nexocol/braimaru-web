@@ -40,6 +40,26 @@ jobs:
       - name: Seed local D1
         run: npm run db:seed:local
 
+      - name: Generate ephemeral admin auth
+        run: |
+          TEST_ADMIN_PASSWORD=$(node -e "process.stdout.write(require('crypto').randomBytes(18).toString('base64url'))")
+          ADMIN_PASSWORD_HASH=$(ADMIN_PASSWORD="$TEST_ADMIN_PASSWORD" node scripts/hash-admin-password.mjs)
+          ADMIN_SESSION_SECRET=$(node -e "process.stdout.write(require('crypto').randomBytes(32).toString('base64url'))")
+
+          echo "::add-mask::$TEST_ADMIN_PASSWORD"
+          echo "::add-mask::$ADMIN_PASSWORD_HASH"
+          echo "::add-mask::$ADMIN_SESSION_SECRET"
+
+          cat > .dev.vars <<EOF
+          ADMIN_USERNAME="admin"
+          ADMIN_PASSWORD_HASH="$ADMIN_PASSWORD_HASH"
+          ADMIN_SESSION_SECRET="$ADMIN_SESSION_SECRET"
+          EOF
+
+          echo "TEST_ADMIN_PASSWORD=$TEST_ADMIN_PASSWORD" >> "$GITHUB_ENV"
+
+          node --experimental-strip-types scripts/test-auth-session.mjs
+
       - name: Start local Workers runtime
         run: |
           CLOUDFLARE_VITE_WRANGLER_CONFIG_PATH=wrangler.local.jsonc npm run dev -- --host 127.0.0.1 --port 8787 > /tmp/braimaru-dev.log 2>&1 &
@@ -71,12 +91,62 @@ jobs:
           if (!Object.prototype.hasOwnProperty.call(site, 'whatsapp_phone')) throw new Error('Missing whatsapp_phone setting');
           NODE
 
+      - name: Test admin authentication
+        run: |
+          ADMIN_STATUS=$(curl --silent --output /dev/null --write-out '%{http_code}' -D /tmp/admin-anon.headers http://127.0.0.1:8787/admin)
+          test "$ADMIN_STATUS" = "302"
+          grep -qi '^location: /admin/login' /tmp/admin-anon.headers
+
+          API_STATUS=$(curl --silent --output /tmp/admin-api-anon.json --write-out '%{http_code}' http://127.0.0.1:8787/api/admin/products)
+          test "$API_STATUS" = "401"
+
+          WRONG_STATUS=$(curl --silent --output /tmp/login-wrong.json --write-out '%{http_code}'             -X POST             -H 'content-type: application/json'             --data '{"username":"admin","password":"wrong-password"}'             http://127.0.0.1:8787/api/auth/login)
+          test "$WRONG_STATUS" = "401"
+
+          node - <<'NODE'
+          const fs = require('fs');
+          const body = JSON.parse(fs.readFileSync('/tmp/login-wrong.json', 'utf8'));
+          if (body?.error?.message !== 'Usuario o contraseña incorrectos.') {
+            throw new Error('Wrong-login response leaked or changed credential details');
+          }
+          NODE
+
+          curl --fail --silent             -D /tmp/login-ok.headers             -o /tmp/login-ok.json             -X POST             -H 'content-type: application/json'             --data "{"username":"admin","password":"$TEST_ADMIN_PASSWORD"}"             http://127.0.0.1:8787/api/auth/login
+
+          grep -qi '^set-cookie: braimaru_admin_session=' /tmp/login-ok.headers
+          grep -qi 'HttpOnly' /tmp/login-ok.headers
+          grep -qi 'Secure' /tmp/login-ok.headers
+          grep -qi 'SameSite=Strict' /tmp/login-ok.headers
+          grep -qi 'Path=/' /tmp/login-ok.headers
+          grep -qi 'Max-Age=28800' /tmp/login-ok.headers
+
+          COOKIE_HEADER=$(grep -i '^set-cookie: braimaru_admin_session=' /tmp/login-ok.headers | head -n 1 | sed 's/^[Ss]et-[Cc]ookie: //' | cut -d';' -f1 | tr -d '\r')
+          test -n "$COOKIE_HEADER"
+          printf '%s' "$COOKIE_HEADER" > /tmp/admin-cookie-header
+
+          curl --fail --silent             -H "Cookie: $COOKIE_HEADER"             http://127.0.0.1:8787/api/auth/session > /tmp/session.json
+
+          node - <<'NODE'
+          const fs = require('fs');
+          const session = JSON.parse(fs.readFileSync('/tmp/session.json', 'utf8'));
+          if (session.authenticated !== true || session.username !== 'admin') {
+            throw new Error('Authenticated session check failed');
+          }
+          NODE
+
+          AUTH_ADMIN_STATUS=$(curl --silent --output /dev/null --write-out '%{http_code}'             -H "Cookie: $COOKIE_HEADER"             http://127.0.0.1:8787/admin)
+          test "$AUTH_ADMIN_STATUS" = "200"
+
+          curl --fail --silent             -H "Cookie: $COOKIE_HEADER"             http://127.0.0.1:8787/api/admin/products > /tmp/admin-products-auth.json
+
       - name: Test admin CRUD and R2 media lifecycle
         run: |
+          COOKIE_HEADER=$(cat /tmp/admin-cookie-header)
+
           printf 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl7lWQAAAAASUVORK5CYII=' | base64 --decode > /tmp/image-a.png
           cp /tmp/image-a.png /tmp/image-b.png
 
-          curl --fail --silent             -X POST             -H 'content-type: image/png'             --data-binary @/tmp/image-a.png             http://127.0.0.1:8787/api/admin/media > /tmp/media-a.json
+          curl --fail --silent             -X POST             -H "Cookie: $COOKIE_HEADER"             -H 'content-type: image/png'             --data-binary @/tmp/image-a.png             http://127.0.0.1:8787/api/admin/media > /tmp/media-a.json
 
           KEY_A=$(node -p "JSON.parse(require('fs').readFileSync('/tmp/media-a.json','utf8')).key")
           curl --fail --silent "http://127.0.0.1:8787/media/$KEY_A" > /tmp/read-a.png
@@ -98,11 +168,11 @@ jobs:
           }
           JSON
 
-          curl --fail --silent             -X POST             -H 'content-type: application/json'             --data @/tmp/create.json             http://127.0.0.1:8787/api/admin/products > /tmp/created.json
+          curl --fail --silent             -X POST             -H "Cookie: $COOKIE_HEADER"             -H 'content-type: application/json'             --data @/tmp/create.json             http://127.0.0.1:8787/api/admin/products > /tmp/created.json
 
           PRODUCT_ID=$(node -p "JSON.parse(require('fs').readFileSync('/tmp/created.json','utf8')).product.id")
 
-          curl --fail --silent             -X POST             -H 'content-type: image/png'             --data-binary @/tmp/image-b.png             http://127.0.0.1:8787/api/admin/media > /tmp/media-b.json
+          curl --fail --silent             -X POST             -H "Cookie: $COOKIE_HEADER"             -H 'content-type: image/png'             --data-binary @/tmp/image-b.png             http://127.0.0.1:8787/api/admin/media > /tmp/media-b.json
 
           KEY_B=$(node -p "JSON.parse(require('fs').readFileSync('/tmp/media-b.json','utf8')).key")
 
@@ -123,7 +193,7 @@ jobs:
           }
           JSON
 
-          curl --fail --silent             -X PUT             -H 'content-type: application/json'             --data @/tmp/update-hidden.json             "http://127.0.0.1:8787/api/admin/products/$PRODUCT_ID" > /tmp/updated-hidden.json
+          curl --fail --silent             -X PUT             -H "Cookie: $COOKIE_HEADER"             -H 'content-type: application/json'             --data @/tmp/update-hidden.json             "http://127.0.0.1:8787/api/admin/products/$PRODUCT_ID" > /tmp/updated-hidden.json
 
           STATUS_OLD=$(curl --silent --output /dev/null --write-out '%{http_code}' "http://127.0.0.1:8787/media/$KEY_A")
           test "$STATUS_OLD" = "404"
@@ -144,7 +214,7 @@ jobs:
             fs.writeFileSync('/tmp/update-active.json', JSON.stringify(data));
           "
 
-          curl --fail --silent             -X PUT             -H 'content-type: application/json'             --data @/tmp/update-active.json             "http://127.0.0.1:8787/api/admin/products/$PRODUCT_ID" > /tmp/updated-active.json
+          curl --fail --silent             -X PUT             -H "Cookie: $COOKIE_HEADER"             -H 'content-type: application/json'             --data @/tmp/update-active.json             "http://127.0.0.1:8787/api/admin/products/$PRODUCT_ID" > /tmp/updated-active.json
 
           node - <<'NODE'
           const fs = require('fs');
@@ -152,12 +222,13 @@ jobs:
           if (product.active !== true) throw new Error('Activate flow failed');
           NODE
 
-          curl --fail --silent             -X DELETE             "http://127.0.0.1:8787/api/admin/products/$PRODUCT_ID" > /tmp/deleted.json
+          curl --fail --silent             -X DELETE             -H "Cookie: $COOKIE_HEADER"             "http://127.0.0.1:8787/api/admin/products/$PRODUCT_ID" > /tmp/deleted.json
 
           STATUS_NEW=$(curl --silent --output /dev/null --write-out '%{http_code}' "http://127.0.0.1:8787/media/$KEY_B")
           test "$STATUS_NEW" = "404"
 
-          curl --fail --silent http://127.0.0.1:8787/api/admin/products > /tmp/admin-products-final.json
+          curl --fail --silent             -H "Cookie: $COOKIE_HEADER"             http://127.0.0.1:8787/api/admin/products > /tmp/admin-products-final.json
+
           node - <<'NODE'
           const fs = require('fs');
           const products = JSON.parse(fs.readFileSync('/tmp/admin-products-final.json', 'utf8')).products;
@@ -165,6 +236,20 @@ jobs:
             throw new Error('Delete flow failed');
           }
           NODE
+
+      - name: Test logout
+        run: |
+          COOKIE_HEADER=$(cat /tmp/admin-cookie-header)
+
+          LOGOUT_STATUS=$(curl --silent --output /dev/null --write-out '%{http_code}'             -D /tmp/logout.headers             -X POST             -H "Cookie: $COOKIE_HEADER"             http://127.0.0.1:8787/api/auth/logout)
+          test "$LOGOUT_STATUS" = "204"
+          grep -qi 'Max-Age=0' /tmp/logout.headers
+
+          SESSION_AFTER_LOGOUT=$(curl --silent --output /tmp/session-after-logout.json --write-out '%{http_code}'             http://127.0.0.1:8787/api/auth/session)
+          test "$SESSION_AFTER_LOGOUT" = "401"
+
+          API_AFTER_LOGOUT=$(curl --silent --output /tmp/admin-after-logout.json --write-out '%{http_code}'             http://127.0.0.1:8787/api/admin/products)
+          test "$API_AFTER_LOGOUT" = "401"
 
       - name: Dump runtime log on failure
         if: failure()
