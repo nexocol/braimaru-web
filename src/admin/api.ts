@@ -26,15 +26,25 @@ export class AdminApiError extends Error {
   }
 }
 
+function extractApiError(data: unknown) {
+  if (!data || typeof data !== 'object' || !('error' in data)) return null;
+  const candidate = (data as { error?: unknown }).error;
+  if (!candidate || typeof candidate !== 'object') return null;
+
+  const error = candidate as { code?: unknown; message?: unknown; details?: unknown };
+  return {
+    code: typeof error.code === 'string' ? error.code : undefined,
+    message: typeof error.message === 'string' ? error.message : undefined,
+    details: error.details,
+  };
+}
+
 async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
   const response = await fetch(url, init);
-  const data = await response.json().catch(() => null) as
-    | { error?: { code?: string; message?: string; details?: unknown } }
-    | T
-    | null;
+  const data: unknown = await response.json().catch(() => null);
 
   if (!response.ok) {
-    const error = data && 'error' in data ? data.error : undefined;
+    const error = extractApiError(data);
     throw new AdminApiError(
       error?.message ?? 'Administrative request failed.',
       response.status,
