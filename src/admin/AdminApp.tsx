@@ -14,20 +14,29 @@ import {
   uploadAdminImage,
   type AdminProductPayload,
 } from './api';
+import { AdminAuthError, fetchAdminSession, logoutAdmin } from './auth';
 import { ProductForm } from './ProductForm';
 
 export function AdminApp() {
   const [products, setProducts] = useState<ApiProduct[]>([]);
   const [categories, setCategories] = useState<ApiCategory[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [sessionLoading, setSessionLoading] = useState(true);
+  const [username, setUsername] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState<ApiProduct | null | undefined>(undefined);
   const [submitting, setSubmitting] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<ApiProduct | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  const redirectToLogin = useCallback(() => {
+    window.location.assign('/admin/login');
+  }, []);
 
   const load = useCallback(async () => {
     setLoading(true);
     setMessage(null);
+
     try {
       const [productResponse, categoryResponse] = await Promise.all([
         fetchAdminProducts(),
@@ -36,19 +45,60 @@ export function AdminApp() {
       setProducts(productResponse.products);
       setCategories(categoryResponse.categories);
     } catch (error) {
-      const text =
-        error instanceof AdminApiError && error.status === 403
-          ? 'El panel necesita protección de Cloudflare Access antes de habilitar datos remotos.'
-          : 'No se pudo cargar el panel de productos.';
-      setMessage({ type: 'error', text });
+      if (error instanceof AdminApiError && error.status === 401) {
+        redirectToLogin();
+        return;
+      }
+
+      setMessage({ type: 'error', text: 'No se pudo cargar el panel de productos.' });
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [redirectToLogin]);
 
   useEffect(() => {
-    void load();
-  }, [load]);
+    let cancelled = false;
+
+    fetchAdminSession()
+      .then((session) => {
+        if (cancelled) return;
+        if (!session.authenticated) {
+          redirectToLogin();
+          return;
+        }
+
+        setUsername(session.username ?? null);
+        setSessionLoading(false);
+        void load();
+      })
+      .catch((error) => {
+        if (cancelled) return;
+        if (error instanceof AdminAuthError && error.status === 401) {
+          redirectToLogin();
+          return;
+        }
+
+        setMessage({ type: 'error', text: 'No se pudo validar la sesión administrativa.' });
+        setSessionLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [load, redirectToLogin]);
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    setMessage(null);
+
+    try {
+      await logoutAdmin();
+      redirectToLogin();
+    } catch {
+      setMessage({ type: 'error', text: 'No se pudo cerrar la sesión. Intenta nuevamente.' });
+      setLoggingOut(false);
+    }
+  };
 
   const saveProduct = async (payload: AdminProductPayload, imageFile: File | null) => {
     setSubmitting(true);
@@ -79,10 +129,12 @@ export function AdminApp() {
         await deleteAdminImage(uploadedKey).catch(() => undefined);
       }
 
-      const text =
-        error instanceof AdminApiError
-          ? error.message
-          : 'No se pudo guardar el producto.';
+      if (error instanceof AdminApiError && error.status === 401) {
+        redirectToLogin();
+        return;
+      }
+
+      const text = error instanceof AdminApiError ? error.message : 'No se pudo guardar el producto.';
       setMessage({ type: 'error', text });
     } finally {
       setSubmitting(false);
@@ -95,6 +147,11 @@ export function AdminApp() {
       await updateAdminProduct(product.id, productToPayload(product, { active: !product.active }));
       await load();
     } catch (error) {
+      if (error instanceof AdminApiError && error.status === 401) {
+        redirectToLogin();
+        return;
+      }
+
       setMessage({
         type: 'error',
         text: error instanceof AdminApiError ? error.message : 'No se pudo cambiar la visibilidad.',
@@ -113,6 +170,11 @@ export function AdminApp() {
       setMessage({ type: 'success', text: 'Producto eliminado.' });
       await load();
     } catch (error) {
+      if (error instanceof AdminApiError && error.status === 401) {
+        redirectToLogin();
+        return;
+      }
+
       setMessage({
         type: 'error',
         text: error instanceof AdminApiError ? error.message : 'No se pudo eliminar el producto.',
@@ -122,15 +184,32 @@ export function AdminApp() {
     }
   };
 
+  if (sessionLoading) {
+    return (
+      <main className="admin-shell">
+        <p className="admin-empty" aria-live="polite">Validando sesión…</p>
+      </main>
+    );
+  }
+
   return (
     <main className="admin-shell">
       <header className="admin-header">
         <div>
           <p className="admin-kicker">BRAIMARÚ Admin</p>
           <h1>Productos</h1>
+          {username ? <p className="admin-session-user">Sesión: {username}</p> : null}
         </div>
         <div className="admin-header-actions">
           <a className="admin-button admin-button--quiet" href="/">Ver sitio</a>
+          <button
+            className="admin-button admin-button--quiet"
+            type="button"
+            disabled={loggingOut}
+            onClick={() => void handleLogout()}
+          >
+            {loggingOut ? 'Saliendo…' : 'Cerrar sesión'}
+          </button>
           <button className="admin-button admin-button--primary" type="button" onClick={() => setEditing(null)}>
             Nuevo producto
           </button>

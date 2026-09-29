@@ -1,4 +1,5 @@
 import { AdminApp } from '../admin/AdminApp';
+import { AdminLogin } from '../admin/AdminLogin';
 import { Header } from '../components/Header/Header';
 import { useStorefrontData } from '../hooks/useStorefrontData';
 import { Footer } from '../layout/Footer/Footer';
@@ -59,6 +60,10 @@ function StorefrontApp() {
 }
 
 export function App() {
+  if (window.location.pathname === '/admin/login') {
+    return <AdminLogin />;
+  }
+
   if (window.location.pathname === '/admin' || window.location.pathname.startsWith('/admin/')) {
     return <AdminApp />;
   }
