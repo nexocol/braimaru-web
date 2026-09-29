@@ -26,7 +26,8 @@ export async function readJsonBody<T>(request: Request): Promise<T | null> {
   if (!contentType.toLowerCase().includes('application/json')) return null;
 
   try {
-    return await request.json<T>();
+    const value: unknown = await request.json();
+    return value as T;
   } catch {
     return null;
   }

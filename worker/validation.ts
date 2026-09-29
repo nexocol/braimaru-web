@@ -1,5 +1,6 @@
-import type { D1DatabaseLike } from './types';
 import { categoryExists, type ProductMutationInput } from './db/catalogRepository';
+import { isValidMediaKey } from './media';
+import type { D1DatabaseLike } from './types';
 
 export const RITUAL_TAGS = new Set([
   'hidratar',
@@ -43,6 +44,24 @@ function booleanValue(value: unknown, fallback: boolean) {
   return typeof value === 'boolean' ? value : fallback;
 }
 
+function validImageKey(value: string | null | undefined) {
+  if (value === null) return true;
+  if (value === undefined) return false;
+
+  if (value.startsWith('static:')) {
+    const staticPath = value.slice('static:'.length);
+    return (
+      staticPath.length > 0 &&
+      staticPath.length <= 280 &&
+      !staticPath.startsWith('/') &&
+      !staticPath.includes('..') &&
+      /^[a-zA-Z0-9/_\-.]+$/.test(staticPath)
+    );
+  }
+
+  return isValidMediaKey(value);
+}
+
 export async function validateProductInput(
   db: D1DatabaseLike,
   raw: RawProductInput,
@@ -68,7 +87,7 @@ export async function validateProductInput(
     errors.short_description = 'Short description is required and must be 280 characters or fewer.';
   }
   if (description === undefined) errors.description = 'Description is too long.';
-  if (imageKey === undefined) errors.image_key = 'Image key is invalid.';
+  if (!validImageKey(imageKey)) errors.image_key = 'Image key is invalid.';
 
   const benefits = Array.isArray(raw.benefits)
     ? raw.benefits
@@ -107,7 +126,14 @@ export async function validateProductInput(
       : null;
   if (sortOrder === null) errors.sort_order = 'Sort order must be a non-negative integer.';
 
-  if (Object.keys(errors).length > 0 || !name || !slug || !categoryId || !shortDescription || sortOrder === null) {
+  if (
+    Object.keys(errors).length > 0 ||
+    !name ||
+    !slug ||
+    !categoryId ||
+    !shortDescription ||
+    sortOrder === null
+  ) {
     return { errors };
   }
 
