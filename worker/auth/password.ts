@@ -9,6 +9,10 @@ function decodeBase64Url(value: string) {
   return Uint8Array.from(binary, (char) => char.charCodeAt(0));
 }
 
+function asArrayBuffer(bytes: Uint8Array) {
+  return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
+}
+
 function constantTimeEqual(left: Uint8Array, right: Uint8Array) {
   if (left.length !== right.length) return false;
   let diff = 0;
@@ -49,7 +53,7 @@ export async function verifyPassword(password: string, encodedHash: string) {
       {
         name: 'PBKDF2',
         hash: 'SHA-256',
-        salt,
+        salt: asArrayBuffer(salt),
         iterations,
       },
       keyMaterial,
