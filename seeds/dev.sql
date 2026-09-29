@@ -41,9 +41,9 @@ INSERT OR REPLACE INTO products (
     'cuidado-capilar',
     'Acondicionador con ortiga, manzanilla y canela.',
     NULL,
-    'static:products/acondicionador-capilar-v11.webp',
     '["Hidrata","Desenreda","Suaviza"]',
     NULL,
+    'static:products/acondicionador-capilar-v11.webp',
     '["hidratar","cuidado-capilar"]',
     1, 1, 3
   );
