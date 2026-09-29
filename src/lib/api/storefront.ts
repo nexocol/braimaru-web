@@ -29,7 +29,8 @@ async function getJson<T>(url: string): Promise<T> {
     throw new ApiRequestError(`Request failed: ${url}`, response.status);
   }
 
-  return response.json<T>();
+  const value: unknown = await response.json();
+  return value as T;
 }
 
 async function getRuntimeHealth() {
