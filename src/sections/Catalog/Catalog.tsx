@@ -13,9 +13,10 @@ const filters: Array<{ id: CatalogFilter; label: string }> = [
 
 interface CatalogProps {
   products: Product[];
+  phone?: string | null;
 }
 
-export function Catalog({ products }: CatalogProps) {
+export function Catalog({ products, phone = null }: CatalogProps) {
   const [activeFilter, setActiveFilter] = useState<CatalogFilter>('all');
 
   const visibleProducts = useMemo(
@@ -54,7 +55,7 @@ export function Catalog({ products }: CatalogProps) {
       <motion.div className="catalog-grid" layout>
         <AnimatePresence mode="popLayout">
           {visibleProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} phone={phone} />
           ))}
         </AnimatePresence>
       </motion.div>

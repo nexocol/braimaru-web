@@ -7,7 +7,11 @@ import { buildWhatsAppUrl } from '../../lib/whatsapp';
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function Hero() {
+interface HeroProps {
+  phone?: string | null;
+}
+
+export function Hero({ phone = null }: HeroProps) {
   const root = useRef<HTMLElement>(null);
   const reducedMotion = useReducedMotion();
 
@@ -103,7 +107,7 @@ export function Hero() {
         <p>Bienestar real en rituales inspirados en el cuidado consciente.</p>
         <div className="hero-actions">
           <a className="button primary" href="#productos">Descubrir productos <ArrowIcon /></a>
-          <a className="button ghost" href={buildWhatsAppUrl()} target="_blank" rel="noreferrer">
+          <a className="button ghost" href={buildWhatsAppUrl({ phone })} target="_blank" rel="noreferrer">
             Hablar por WhatsApp
           </a>
         </div>

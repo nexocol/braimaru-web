@@ -1,4 +1,5 @@
 import { motion } from 'motion/react';
+import { formatCopPrice } from '../../lib/format/price';
 import { buildWhatsAppUrl } from '../../lib/whatsapp';
 import type { Product } from '../../types/catalog';
 import { ArrowIcon } from '../ArrowIcon/ArrowIcon';
@@ -7,11 +8,19 @@ type ProductCardVariant = 'default' | 'editorial' | 'compact';
 
 interface ProductCardProps {
   product: Product;
+  phone?: string | null;
   priority?: boolean;
   variant?: ProductCardVariant;
 }
 
-export function ProductCard({ product, priority = false, variant = 'default' }: ProductCardProps) {
+export function ProductCard({
+  product,
+  phone = null,
+  priority = false,
+  variant = 'default',
+}: ProductCardProps) {
+  const formattedPrice = formatCopPrice(product.priceCop);
+
   return (
     <motion.article
       className={`product-card product-card--${variant}`}
@@ -47,10 +56,10 @@ export function ProductCard({ product, priority = false, variant = 'default' }: 
         </ul>
 
         <div className="product-actions">
-          <span className="price-pending">Consultar precio</span>
+          <span className="price-pending">{formattedPrice ?? 'Consultar precio'}</span>
           <a
             className="text-link"
-            href={buildWhatsAppUrl({ productName: product.name })}
+            href={buildWhatsAppUrl({ phone, productName: product.name })}
             target="_blank"
             rel="noreferrer"
           >

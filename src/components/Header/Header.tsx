@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import { buildWhatsAppUrl } from '../../lib/whatsapp';
 
-export function Header() {
+interface HeaderProps {
+  phone?: string | null;
+}
+
+export function Header({ phone = null }: HeaderProps) {
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
 
@@ -15,7 +19,7 @@ export function Header() {
         <a href="#productos" onClick={close}>Productos</a>
         <a href="#ritual" onClick={close}>Tu ritual</a>
         <a href="#historia" onClick={close}>Nuestra esencia</a>
-        <a className="nav-cta" href={buildWhatsAppUrl()} target="_blank" rel="noreferrer">WhatsApp</a>
+        <a className="nav-cta" href={buildWhatsAppUrl({ phone })} target="_blank" rel="noreferrer">WhatsApp</a>
       </nav>
     </header>
   );

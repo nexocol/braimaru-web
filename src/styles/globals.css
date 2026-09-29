@@ -31,3 +31,22 @@ h1, h2, h3 {
   letter-spacing: 0.18em;
   text-transform: uppercase;
 }
+.storefront-state {
+  display: grid;
+  min-height: 100svh;
+  place-content: center;
+  padding: 7rem 1.5rem;
+  text-align: center;
+}
+.storefront-state h1 {
+  max-width: 13ch;
+  margin: 0 auto 1.25rem;
+  font-size: clamp(3.4rem, 10vw, 8rem);
+  letter-spacing: -0.04em;
+}
+.storefront-state > p:last-child {
+  max-width: 34rem;
+  margin-inline: auto;
+  color: var(--ink-soft);
+  line-height: 1.7;
+}

@@ -3,9 +3,10 @@ import type { Product } from '../../types/catalog';
 
 interface FeaturedProductsProps {
   products: Product[];
+  phone?: string | null;
 }
 
-export function FeaturedProducts({ products }: FeaturedProductsProps) {
+export function FeaturedProducts({ products, phone = null }: FeaturedProductsProps) {
   const featured = products.filter((product) => product.featured && product.active);
   const [lead, ...secondary] = featured;
 
@@ -23,10 +24,10 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
       </div>
 
       <div className="featured-layout">
-        {lead ? <ProductCard product={lead} priority variant="editorial" /> : null}
+        {lead ? <ProductCard product={lead} phone={phone} priority variant="editorial" /> : null}
         <div className="featured-stack">
           {secondary.map((product) => (
-            <ProductCard key={product.id} product={product} variant="compact" />
+            <ProductCard key={product.id} product={product} phone={phone} variant="compact" />
           ))}
         </div>
       </div>
