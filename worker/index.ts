@@ -23,7 +23,8 @@ export default {
       }
 
       if (pathname.startsWith('/api/admin/')) {
-        return await handleAdminApi(request, env, pathname);
+        const response = await handleAdminApi(request, env, pathname);
+        if (response) return response;
       }
 
       if (pathname === '/api/products' || pathname === '/api/categories' || pathname === '/api/site') {
