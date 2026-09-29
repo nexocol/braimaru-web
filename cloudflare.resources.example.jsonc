@@ -1,0 +1,11 @@
+{
+  "note": "Reference only. Do not copy IDs between environments.",
+  "production": {
+    "d1": { "binding": "DB", "database_name": "braimaru-db", "database_id": "TODO_PRODUCTION_D1_ID" },
+    "r2": { "binding": "MEDIA", "bucket_name": "braimaru-media" }
+  },
+  "preview": {
+    "d1": { "binding": "DB", "database_name": "braimaru-db-preview", "database_id": "TODO_PREVIEW_D1_ID" },
+    "r2": { "binding": "MEDIA", "bucket_name": "braimaru-media-preview" }
+  }
+}
