@@ -111,7 +111,24 @@ jobs:
           }
           NODE
 
-          curl --fail --silent             -D /tmp/login-ok.headers             -o /tmp/login-ok.json             -X POST             -H 'content-type: application/json'             --data "{"username":"admin","password":"$TEST_ADMIN_PASSWORD"}"             http://127.0.0.1:8787/api/auth/login
+          node - <<'NODE'
+          const fs = require('fs');
+          fs.writeFileSync(
+            '/tmp/login-correct-request.json',
+            JSON.stringify({
+              username: 'admin',
+              password: process.env.TEST_ADMIN_PASSWORD,
+            }),
+          );
+          NODE
+
+          curl --fail --silent \
+            -D /tmp/login-ok.headers \
+            -o /tmp/login-ok.json \
+            -X POST \
+            -H 'content-type: application/json' \
+            --data @/tmp/login-correct-request.json \
+            http://127.0.0.1:8787/api/auth/login
 
           grep -qi '^set-cookie: braimaru_admin_session=' /tmp/login-ok.headers
           grep -qi 'HttpOnly' /tmp/login-ok.headers
