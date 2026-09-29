@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "braimaru-web-preview-migrations",
+  "main": "./worker/index.ts",
+  "compatibility_date": "2026-09-29",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "braimaru-db-preview",
+      "database_id": "c3909368-8c64-47e4-8bc4-88f2bb24d72a",
+      "migrations_dir": "migrations"
+    }
+  ]
+}

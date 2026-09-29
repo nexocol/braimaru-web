@@ -13,6 +13,13 @@
   "previews": {
     "vars": {
       "BRAIMARU_RESOURCE_MODE": "preview"
-    }
+    },
+    "d1_databases": [
+      {
+        "binding": "DB",
+        "database_name": "braimaru-db-preview",
+        "database_id": "c3909368-8c64-47e4-8bc4-88f2bb24d72a"
+      }
+    ]
   }
 }
