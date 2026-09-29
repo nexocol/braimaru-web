@@ -1,0 +1,65 @@
+@media (max-width: 900px) {
+  .site-header { top: 0.6rem; }
+  .menu-toggle { display: block; }
+  .nav {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    left: 0;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1.2rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-panel);
+    background: var(--ivory);
+  }
+  .nav.open { display: flex; }
+  .hero { display: block; min-height: 100svh; padding: 7rem 1.25rem 2rem; }
+  .hero-kicker { margin-bottom: 3rem; }
+  .hero-title { position: relative; z-index: 3; font-size: clamp(4.3rem, 22vw, 7rem); }
+  .hero-title span:last-child { display: block; text-align: right; }
+  .hero-visual-wrap {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: min(92vw, 32rem);
+    margin: -1.4rem auto 1.5rem;
+    transform: none;
+  }
+  .hero-copy { position: relative; z-index: 3; }
+  .hero-footnote { display: none; }
+  .section-shell { width: min(calc(100% - 2rem), var(--container)); padding-block: 6rem; }
+  .manifesto { display: block; }
+  .manifesto h2 { font-size: clamp(3.7rem, 18vw, 6.6rem); }
+  .manifesto-copy { margin-left: auto; }
+  .section-heading, .ritual-top { grid-template-columns: 1fr; gap: 1.5rem; }
+  .product-grid, .catalog-grid { grid-template-columns: 1fr 1fr; }
+  .editorial-section { grid-template-columns: 1fr; }
+  .editorial-image, .editorial-copy { min-height: 55vh; }
+  .ritual-stage { grid-template-columns: 1fr; }
+  .ritual-image { min-height: 24rem; }
+  .ritual-content { padding: 2rem; }
+  .footer { grid-template-columns: 1fr; gap: 0.5rem; }
+}
+
+@media (max-width: 560px) {
+  .section-shell { padding-block: 5rem; }
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .button { width: 100%; }
+  .product-grid, .catalog-grid { grid-template-columns: 1fr; }
+  .product-media { aspect-ratio: 1 / 1.05; }
+  .ritual-tabs { margin-top: 2.5rem; }
+  .ritual-content { padding: 2rem 1.2rem; }
+  .editorial-copy { padding: 3rem 1.5rem; }
+  .footer { padding-inline: 1.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
