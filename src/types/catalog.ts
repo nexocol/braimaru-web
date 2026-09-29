@@ -10,7 +10,7 @@ export interface Product {
   description?: string;
   benefits: string[];
   priceCop: number | null;
-  image: string;
+  image: string | null;
   imageAlt: string;
   featured: boolean;
   active: boolean;
