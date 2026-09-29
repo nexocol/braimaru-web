@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "braimaru",
+  "name": "braimaru-web",
   "main": "./worker/index.ts",
   "compatibility_date": "2026-09-29",
   "assets": {
