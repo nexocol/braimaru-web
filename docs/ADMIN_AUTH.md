@@ -22,7 +22,13 @@ No token is stored in localStorage.
 
 ## Generate ADMIN_PASSWORD_HASH
 
-The repository includes a local helper that outputs a PBKDF2-SHA256 hash with a random 16-byte salt, 210,000 iterations and a 32-byte digest.
+The repository includes a local helper that outputs a PBKDF2-SHA256 hash with:
+
+- random 16-byte salt;
+- 100,000 iterations;
+- 32-byte digest.
+
+The 100,000-iteration value matches the current PBKDF2 iteration limit enforced by the Cloudflare Workers runtime. The Worker rejects hashes configured with a higher iteration count before invoking Web Crypto.
 
 macOS/Linux:
 
@@ -43,7 +49,7 @@ Copy only the resulting hash into the Cloudflare secret. Do not store the plaint
 Hash format:
 
 ```text
-pbkdf2-sha256$210000$<salt-base64url>$<digest-base64url>
+pbkdf2-sha256$100000$<salt-base64url>$<digest-base64url>
 ```
 
 ## Preview secrets

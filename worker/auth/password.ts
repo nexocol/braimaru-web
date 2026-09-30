@@ -1,5 +1,6 @@
 const HASH_PREFIX = 'pbkdf2-sha256';
 const MIN_ITERATIONS = 100_000;
+const MAX_ITERATIONS = 100_000;
 const textEncoder = new TextEncoder();
 
 function decodeBase64Url(value: string) {
@@ -22,12 +23,22 @@ function constantTimeEqual(left: Uint8Array, right: Uint8Array) {
   return diff === 0;
 }
 
-export async function verifyPassword(password: string, encodedHash: string) {
+export async function verifyPassword(
+  password: string,
+  encodedHash: string,
+  subtle: SubtleCrypto = crypto.subtle,
+) {
   const parts = encodedHash.split('$');
   if (parts.length !== 4 || parts[0] !== HASH_PREFIX) return false;
 
   const iterations = Number(parts[1]);
-  if (!Number.isInteger(iterations) || iterations < MIN_ITERATIONS) return false;
+  if (
+    !Number.isInteger(iterations) ||
+    iterations < MIN_ITERATIONS ||
+    iterations > MAX_ITERATIONS
+  ) {
+    return false;
+  }
 
   let salt: Uint8Array;
   let expected: Uint8Array;
@@ -40,26 +51,30 @@ export async function verifyPassword(password: string, encodedHash: string) {
 
   if (salt.length < 16 || expected.length !== 32) return false;
 
-  const keyMaterial = await crypto.subtle.importKey(
-    'raw',
-    textEncoder.encode(password),
-    'PBKDF2',
-    false,
-    ['deriveBits'],
-  );
+  try {
+    const keyMaterial = await subtle.importKey(
+      'raw',
+      textEncoder.encode(password),
+      'PBKDF2',
+      false,
+      ['deriveBits'],
+    );
 
-  const derived = new Uint8Array(
-    await crypto.subtle.deriveBits(
-      {
-        name: 'PBKDF2',
-        hash: 'SHA-256',
-        salt: asArrayBuffer(salt),
-        iterations,
-      },
-      keyMaterial,
-      256,
-    ),
-  );
+    const derived = new Uint8Array(
+      await subtle.deriveBits(
+        {
+          name: 'PBKDF2',
+          hash: 'SHA-256',
+          salt: asArrayBuffer(salt),
+          iterations,
+        },
+        keyMaterial,
+        256,
+      ),
+    );
 
-  return constantTimeEqual(derived, expected);
+    return constantTimeEqual(derived, expected);
+  } catch {
+    return false;
+  }
 }

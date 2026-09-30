@@ -59,6 +59,7 @@ jobs:
           echo "TEST_ADMIN_PASSWORD=$TEST_ADMIN_PASSWORD" >> "$GITHUB_ENV"
 
           node --experimental-strip-types scripts/test-auth-session.mjs
+          node --experimental-strip-types scripts/test-auth-password.mjs
 
       - name: Start local Workers runtime
         run: |
