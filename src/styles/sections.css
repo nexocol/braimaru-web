@@ -84,8 +84,10 @@
 .hero-visual-main {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  transform: scale(1.02);
+  padding: 6%;
+  object-fit: contain;
+  object-position: center;
+  background: #fff;
 }
 
 .hero-logo-stamp {
@@ -247,7 +249,10 @@
 .editorial-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  padding: 2%;
+  object-fit: contain;
+  object-position: center;
+  background: #fff;
   filter: saturate(0.86) contrast(0.97);
 }
 
@@ -266,7 +271,9 @@
 .editorial-detail img {
   width: 100%;
   aspect-ratio: 1.18;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
+  background: #fff;
 }
 
 .editorial-detail figcaption {
@@ -354,7 +361,10 @@
 .ritual-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  padding: clamp(0.8rem, 2.8vw, 2rem);
+  object-fit: contain;
+  object-position: center;
+  background: #fff;
 }
 
 .ritual-content {
