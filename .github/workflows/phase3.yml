@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feat/v1-data-admin
+      - feat/gate-d-client-ready
   workflow_dispatch:
 
 permissions:
