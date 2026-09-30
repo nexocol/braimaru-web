@@ -23,29 +23,27 @@ export function Footer({ site }: FooterProps) {
         <a href="#historia">Nuestra esencia</a>
       </nav>
 
-      {hasContact ? (
-        <div className="footer-contact" aria-label="Canales de contacto">
-          {site.whatsapp_phone ? (
-            <a
-              href={buildWhatsAppUrl({ phone: site.whatsapp_phone })}
-              target="_blank"
-              rel="noreferrer"
-            >
-              WhatsApp
-            </a>
-          ) : null}
-          {site.instagram_url ? (
-            <a href={site.instagram_url} target="_blank" rel="noreferrer">
-              Instagram
-            </a>
-          ) : null}
-          {site.brand_email ? <a href={`mailto:${site.brand_email}`}>Correo</a> : null}
-        </div>
-      ) : (
-        <div className="footer-contact footer-contact--pending">
-          <span>Canales de contacto por configurar</span>
-        </div>
-      )}
+      <div
+        className="footer-contact"
+        aria-label={hasContact ? 'Canales de contacto' : undefined}
+        aria-hidden={hasContact ? undefined : true}
+      >
+        {site.whatsapp_phone ? (
+          <a
+            href={buildWhatsAppUrl({ phone: site.whatsapp_phone })}
+            target="_blank"
+            rel="noreferrer"
+          >
+            WhatsApp
+          </a>
+        ) : null}
+        {site.instagram_url ? (
+          <a href={site.instagram_url} target="_blank" rel="noreferrer">
+            Instagram
+          </a>
+        ) : null}
+        {site.brand_email ? <a href={`mailto:${site.brand_email}`}>Correo</a> : null}
+      </div>
 
       <p className="footer-copyright">© 2026 BRAIMARÚ</p>
     </footer>
