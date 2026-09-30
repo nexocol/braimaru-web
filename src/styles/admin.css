@@ -437,3 +437,83 @@
   width: 100%;
   margin-top: 0.35rem;
 }
+
+
+.admin-site-card {
+  display: grid;
+  grid-template-columns: minmax(16rem, 0.75fr) minmax(0, 1.25fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
+  margin-bottom: 1.5rem;
+  padding: clamp(1.4rem, 3vw, 2rem);
+  border: 1px solid rgba(38, 30, 25, 0.1);
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.admin-site-card__intro h2 {
+  margin: 0.35rem 0 0.7rem;
+  font-size: clamp(1.6rem, 3vw, 2.3rem);
+}
+
+.admin-site-card__intro > p:last-child {
+  max-width: 32rem;
+  margin: 0;
+  color: rgba(38, 30, 25, 0.65);
+  line-height: 1.6;
+}
+
+.admin-site-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-site-form label {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.admin-site-form label > span {
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.admin-site-form input {
+  width: 100%;
+  min-height: 2.9rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid rgba(38, 30, 25, 0.16);
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.82);
+  color: inherit;
+  font: inherit;
+}
+
+.admin-site-form input:focus {
+  outline: 2px solid rgba(38, 30, 25, 0.18);
+  outline-offset: 2px;
+}
+
+.admin-site-form small {
+  color: rgba(38, 30, 25, 0.55);
+  line-height: 1.45;
+}
+
+.admin-site-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem 1rem;
+  align-items: center;
+  margin-top: 0.3rem;
+}
+
+.admin-site-form__actions > span {
+  color: rgba(38, 30, 25, 0.55);
+  font-size: 0.75rem;
+}
+
+@media (max-width: 760px) {
+  .admin-site-card {
+    grid-template-columns: 1fr;
+  }
+}
