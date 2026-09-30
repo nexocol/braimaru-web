@@ -1,4 +1,9 @@
-export type ProductCategory = 'aceites-corporales' | 'cuidado-capilar' | 'jabones';
+export type ProductCategory =
+  | 'aceites-corporales'
+  | 'cuidado-capilar'
+  | 'jabones'
+  | 'cremas-corporales'
+  | 'cuidado-labial';
 export type RitualTag = 'hidratar' | 'nutrir' | 'exfoliar' | 'cuidado-corporal' | 'cuidado-capilar';
 
 export interface Product {
