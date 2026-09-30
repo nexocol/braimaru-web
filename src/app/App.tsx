@@ -23,7 +23,7 @@ function StorefrontApp() {
           <p className="eyebrow">BRAIMARÚ</p>
           <h1>Preparando tu ritual.</h1>
         </main>
-        <Footer />
+        <Footer site={storefront.site} />
       </>
     );
   }
@@ -37,7 +37,7 @@ function StorefrontApp() {
           <h1>Volvamos a intentarlo en un momento.</h1>
           <p>{storefront.error}</p>
         </main>
-        <Footer />
+        <Footer site={storefront.site} />
       </>
     );
   }
@@ -54,7 +54,7 @@ function StorefrontApp() {
         <Catalog products={storefront.products} phone={phone} />
         <ClosingCTA phone={phone} />
       </main>
-      <Footer />
+      <Footer site={storefront.site} />
     </div>
   );
 }

@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feat/v1-data-admin
+      - feat/gate-d-client-ready
   workflow_dispatch:
 
 permissions:
@@ -156,6 +157,68 @@ jobs:
           test "$AUTH_ADMIN_STATUS" = "200"
 
           curl --fail --silent             -H "Cookie: $COOKIE_HEADER"             http://127.0.0.1:8787/api/admin/products > /tmp/admin-products-auth.json
+
+      - name: Test admin site settings
+        run: |
+          COOKIE_HEADER=$(cat /tmp/admin-cookie-header)
+
+          curl --fail --silent \
+            -H "Cookie: $COOKIE_HEADER" \
+            http://127.0.0.1:8787/api/admin/site > /tmp/admin-site-before.json
+
+          cat > /tmp/site-settings-update.json <<'JSON'
+          {
+            "whatsapp_phone": "573001112233",
+            "instagram_url": "https://instagram.com/braimaru_ci",
+            "brand_email": "ci@example.com"
+          }
+          JSON
+
+          curl --fail --silent \
+            -X PUT \
+            -H "Cookie: $COOKIE_HEADER" \
+            -H 'content-type: application/json' \
+            --data @/tmp/site-settings-update.json \
+            http://127.0.0.1:8787/api/admin/site > /tmp/admin-site-updated.json
+
+          node - <<'NODE'
+          const fs = require('fs');
+          const settings = JSON.parse(fs.readFileSync('/tmp/admin-site-updated.json', 'utf8')).settings;
+          if (settings.whatsapp_phone !== '573001112233') throw new Error('WhatsApp setting update failed');
+          if (settings.instagram_url !== 'https://instagram.com/braimaru_ci') throw new Error('Instagram setting update failed');
+          if (settings.brand_email !== 'ci@example.com') throw new Error('Email setting update failed');
+          NODE
+
+          curl --fail --silent http://127.0.0.1:8787/api/site > /tmp/public-site-updated.json
+
+          node - <<'NODE'
+          const fs = require('fs');
+          const settings = JSON.parse(fs.readFileSync('/tmp/public-site-updated.json', 'utf8')).settings;
+          if (settings.whatsapp_phone !== '573001112233') throw new Error('Public WhatsApp setting did not update');
+          NODE
+
+          cat > /tmp/site-settings-restore.json <<'JSON'
+          {
+            "whatsapp_phone": null,
+            "instagram_url": null,
+            "brand_email": null
+          }
+          JSON
+
+          curl --fail --silent \
+            -X PUT \
+            -H "Cookie: $COOKIE_HEADER" \
+            -H 'content-type: application/json' \
+            --data @/tmp/site-settings-restore.json \
+            http://127.0.0.1:8787/api/admin/site > /tmp/admin-site-restored.json
+
+          node - <<'NODE'
+          const fs = require('fs');
+          const settings = JSON.parse(fs.readFileSync('/tmp/admin-site-restored.json', 'utf8')).settings;
+          if (settings.whatsapp_phone !== null || settings.instagram_url !== null || settings.brand_email !== null) {
+            throw new Error('Site settings restore failed');
+          }
+          NODE
 
       - name: Test admin CRUD and R2 media lifecycle
         run: |

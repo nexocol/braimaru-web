@@ -112,12 +112,36 @@ export async function categoryExists(db: D1DatabaseLike, categoryId: string) {
   return Boolean(row);
 }
 
+export interface SiteSettingsMutationInput {
+  whatsapp_phone: string | null;
+  instagram_url: string | null;
+  brand_email: string | null;
+}
+
 export async function getSiteSettings(db: D1DatabaseLike) {
   const result = await db.prepare(
     'SELECT key, value FROM site_settings ORDER BY key ASC',
   ).all<{ key: string; value: string | null }>();
 
   return Object.fromEntries((result.results ?? []).map((row) => [row.key, row.value]));
+}
+
+export async function updateSiteSettings(
+  db: D1DatabaseLike,
+  input: SiteSettingsMutationInput,
+) {
+  const statements = Object.entries(input).map(([key, value]) =>
+    db.prepare(
+      `INSERT INTO site_settings (key, value, updated_at)
+       VALUES (?, ?, CURRENT_TIMESTAMP)
+       ON CONFLICT(key) DO UPDATE SET
+         value = excluded.value,
+         updated_at = CURRENT_TIMESTAMP`,
+    ).bind(key, value),
+  );
+
+  await db.batch(statements);
+  return getSiteSettings(db);
 }
 
 export async function createProduct(db: D1DatabaseLike, input: ProductMutationInput) {

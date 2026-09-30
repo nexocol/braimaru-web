@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { formatCopPrice } from '../lib/format/price';
-import type { ApiCategory, ApiProduct } from '../lib/api/types';
+import type { ApiCategory, ApiProduct, SiteSettings } from '../lib/api/types';
 import {
   AdminApiError,
   createAdminProduct,
@@ -9,8 +9,10 @@ import {
   deleteAdminProduct,
   fetchAdminCategories,
   fetchAdminProducts,
+  fetchAdminSiteSettings,
   productToPayload,
   updateAdminProduct,
+  updateAdminSiteSettings,
   uploadAdminImage,
   type AdminProductPayload,
 } from './api';
@@ -20,6 +22,17 @@ import { ProductForm } from './ProductForm';
 export function AdminApp() {
   const [products, setProducts] = useState<ApiProduct[]>([]);
   const [categories, setCategories] = useState<ApiCategory[]>([]);
+  const [siteSettings, setSiteSettings] = useState<SiteSettings>({
+    whatsapp_phone: null,
+    instagram_url: null,
+    brand_email: null,
+  });
+  const [siteDraft, setSiteDraft] = useState<SiteSettings>({
+    whatsapp_phone: null,
+    instagram_url: null,
+    brand_email: null,
+  });
+  const [savingSite, setSavingSite] = useState(false);
   const [sessionLoading, setSessionLoading] = useState(true);
   const [username, setUsername] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -38,12 +51,15 @@ export function AdminApp() {
     setMessage(null);
 
     try {
-      const [productResponse, categoryResponse] = await Promise.all([
+      const [productResponse, categoryResponse, siteResponse] = await Promise.all([
         fetchAdminProducts(),
         fetchAdminCategories(),
+        fetchAdminSiteSettings(),
       ]);
       setProducts(productResponse.products);
       setCategories(categoryResponse.categories);
+      setSiteSettings(siteResponse.settings);
+      setSiteDraft(siteResponse.settings);
     } catch (error) {
       if (error instanceof AdminApiError && error.status === 401) {
         redirectToLogin();
@@ -86,6 +102,31 @@ export function AdminApp() {
       cancelled = true;
     };
   }, [load, redirectToLogin]);
+
+  const saveSiteSettings = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSavingSite(true);
+    setMessage(null);
+
+    try {
+      const response = await updateAdminSiteSettings(siteDraft);
+      setSiteSettings(response.settings);
+      setSiteDraft(response.settings);
+      setMessage({ type: 'success', text: 'Información del sitio actualizada.' });
+    } catch (error) {
+      if (error instanceof AdminApiError && error.status === 401) {
+        redirectToLogin();
+        return;
+      }
+
+      setMessage({
+        type: 'error',
+        text: error instanceof AdminApiError ? error.message : 'No se pudo actualizar la información del sitio.',
+      });
+    } finally {
+      setSavingSite(false);
+    }
+  };
 
   const handleLogout = async () => {
     setLoggingOut(true);
@@ -224,6 +265,68 @@ export function AdminApp() {
           {message.text}
         </p>
       ) : null}
+
+      <section className="admin-site-card" aria-labelledby="site-settings-title">
+        <div className="admin-site-card__intro">
+          <p className="admin-kicker">Información del sitio</p>
+          <h2 id="site-settings-title">Contacto y canales</h2>
+          <p>
+            Estos datos alimentan los botones de WhatsApp y los enlaces de contacto del sitio público.
+          </p>
+        </div>
+
+        <form className="admin-site-form" onSubmit={(event) => void saveSiteSettings(event)}>
+          <label>
+            <span>WhatsApp</span>
+            <input
+              type="tel"
+              inputMode="tel"
+              value={siteDraft.whatsapp_phone ?? ''}
+              onChange={(event) => setSiteDraft((current) => ({ ...current, whatsapp_phone: event.target.value || null }))}
+              placeholder="57 + número, sin espacios"
+              autoComplete="tel"
+            />
+            <small>Incluye el código de país. Ejemplo de formato: 57XXXXXXXXXX.</small>
+          </label>
+
+          <label>
+            <span>Instagram</span>
+            <input
+              type="url"
+              value={siteDraft.instagram_url ?? ''}
+              onChange={(event) => setSiteDraft((current) => ({ ...current, instagram_url: event.target.value || null }))}
+              placeholder="https://instagram.com/..."
+              autoComplete="url"
+            />
+          </label>
+
+          <label>
+            <span>Correo de la marca</span>
+            <input
+              type="email"
+              value={siteDraft.brand_email ?? ''}
+              onChange={(event) => setSiteDraft((current) => ({ ...current, brand_email: event.target.value || null }))}
+              placeholder="correo@marca.com"
+              autoComplete="email"
+            />
+          </label>
+
+          <div className="admin-site-form__actions">
+            <button
+              className="admin-button admin-button--primary"
+              type="submit"
+              disabled={savingSite}
+            >
+              {savingSite ? 'Guardando…' : 'Guardar información'}
+            </button>
+            {siteSettings.whatsapp_phone || siteSettings.instagram_url || siteSettings.brand_email ? (
+              <span>Configuración activa en Production después del guardado.</span>
+            ) : (
+              <span>Aún no hay datos de contacto configurados.</span>
+            )}
+          </div>
+        </form>
+      </section>
 
       <AnimatePresence>
         {editing !== undefined ? (

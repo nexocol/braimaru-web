@@ -16,7 +16,7 @@ export function ClosingCTA({ phone = null }: ClosingCTAProps) {
         target="_blank"
         rel="noreferrer"
       >
-        Hablar con la marca <ArrowIcon />
+        Hablar por WhatsApp <ArrowIcon />
       </a>
     </section>
   );
