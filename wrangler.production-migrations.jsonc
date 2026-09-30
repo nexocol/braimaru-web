@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "braimaru-web-production-migrations",
+  "main": "./worker/index.ts",
+  "compatibility_date": "2026-09-29",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "braimaru-db",
+      "database_id": "a3d1ef04-5934-4368-b6b7-54aeabb257fa",
+      "migrations_dir": "migrations"
+    }
+  ]
+}
