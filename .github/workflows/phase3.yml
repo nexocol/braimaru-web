@@ -86,9 +86,9 @@ jobs:
           const categories = JSON.parse(fs.readFileSync('/tmp/categories.json', 'utf8')).categories;
           const site = JSON.parse(fs.readFileSync('/tmp/site.json', 'utf8')).settings;
 
-          if (products.length !== 3) throw new Error(`Expected 3 seeded products, got ${products.length}`);
+          if (products.length !== 15) throw new Error(`Expected 15 seeded products, got ${products.length}`);
           if (!products.every((product) => product.active === true)) throw new Error('Public API returned inactive product');
-          if (categories.length !== 3) throw new Error(`Expected 3 categories, got ${categories.length}`);
+          if (categories.length !== 5) throw new Error(`Expected 5 categories, got ${categories.length}`);
           if (!Object.prototype.hasOwnProperty.call(site, 'whatsapp_phone')) throw new Error('Missing whatsapp_phone setting');
           NODE
 

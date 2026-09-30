@@ -9,6 +9,9 @@ const filters: Array<{ id: CatalogFilter; label: string }> = [
   { id: 'all', label: 'Todos' },
   { id: 'aceites-corporales', label: 'Aceites corporales' },
   { id: 'cuidado-capilar', label: 'Cuidado capilar' },
+  { id: 'jabones', label: 'Jabones' },
+  { id: 'cremas-corporales', label: 'Cremas corporales' },
+  { id: 'cuidado-labial', label: 'Cuidado labial' },
 ];
 
 interface CatalogProps {

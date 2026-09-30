@@ -5,6 +5,8 @@ const PRODUCT_CATEGORIES = new Set<ProductCategory>([
   'aceites-corporales',
   'cuidado-capilar',
   'jabones',
+  'cremas-corporales',
+  'cuidado-labial',
 ]);
 
 const RITUAL_TAGS = new Set<RitualTag>([
