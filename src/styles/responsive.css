@@ -1,0 +1,311 @@
+@media (max-width: 900px) {
+  .site-header {
+    top: 0.6rem;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .nav {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    left: 0;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1.2rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-panel);
+    background: var(--ivory);
+    box-shadow: 0 18px 45px rgba(38, 30, 25, 0.08);
+  }
+
+  .nav.open {
+    display: flex;
+  }
+
+  .hero {
+    display: block;
+    min-height: 100svh;
+    padding: 7rem 1.25rem 2rem;
+  }
+
+  .hero-kicker {
+    margin-bottom: 3rem;
+  }
+
+  .hero-title {
+    position: relative;
+    z-index: 3;
+    font-size: clamp(4.3rem, 20vw, 7rem);
+  }
+
+  .hero-title span:last-child {
+    display: block;
+    text-align: right;
+  }
+
+  .hero-visual-wrap {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: min(88vw, 31rem);
+    margin: -0.8rem auto 1.3rem;
+    transform: none;
+  }
+
+  .hero-visual-mask {
+    width: 65%;
+  }
+
+  .hero-logo-stamp {
+    left: -1%;
+    width: 34%;
+  }
+
+  .hero-product-note {
+    right: 2%;
+  }
+
+  .hero-copy {
+    position: relative;
+    z-index: 3;
+  }
+
+  .hero-footnote {
+    display: none;
+  }
+
+  .section-shell {
+    width: min(calc(100% - 2rem), var(--container));
+    padding-block: 6rem;
+  }
+
+  .manifesto {
+    display: block;
+  }
+
+  .manifesto h2 {
+    font-size: clamp(3.7rem, 18vw, 6.6rem);
+  }
+
+  .manifesto-copy {
+    margin-left: auto;
+  }
+
+  .section-heading,
+  .ritual-top {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .featured-layout {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .featured-stack {
+    padding-top: 0;
+  }
+
+  .product-card--editorial .product-meta {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+
+  .product-card--editorial .product-meta > *,
+  .product-card--editorial .product-meta > p,
+  .product-card--editorial .product-benefits,
+  .product-card--editorial .product-actions {
+    grid-column: 1;
+  }
+
+  .editorial-section {
+    grid-template-columns: 1fr;
+  }
+
+  .editorial-visuals {
+    min-height: 68vh;
+  }
+
+  .editorial-copy {
+    min-height: 52vh;
+  }
+
+  .ritual-stage {
+    grid-template-columns: 1fr;
+  }
+
+  .ritual-image {
+    min-height: 28rem;
+  }
+
+  .ritual-content {
+    padding: 2rem;
+  }
+
+  .catalog-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .footer {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .site-header {
+    width: calc(100% - 1rem);
+  }
+
+  .brand-lockup {
+    font-size: 1rem;
+  }
+
+  .section-shell {
+    padding-block: 5rem;
+  }
+
+  .hero {
+    padding-inline: 1rem;
+  }
+
+  .hero-kicker {
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-title {
+    font-size: clamp(4rem, 19vw, 5.6rem);
+    line-height: 0.76;
+  }
+
+  .hero-visual-wrap {
+    width: min(90vw, 27rem);
+    margin-top: 0;
+  }
+
+  .hero-visual-mask {
+    width: 68%;
+  }
+
+  .hero-logo-stamp {
+    bottom: 8%;
+    left: 0;
+    width: 32%;
+  }
+
+  .hero-product-note {
+    display: none;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .button {
+    width: 100%;
+    min-height: 3rem;
+  }
+
+  .product-card--compact {
+    grid-template-columns: minmax(7.5rem, 0.85fr) 1.15fr;
+    gap: 1rem;
+  }
+
+  .product-card--compact .product-benefits {
+    display: none;
+  }
+
+  .product-card--compact .product-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.45rem;
+  }
+
+  .product-card--editorial .product-media {
+    aspect-ratio: 0.96;
+  }
+
+  .catalog-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .product-media {
+    aspect-ratio: 1 / 1.05;
+  }
+
+  .editorial-visuals {
+    min-height: auto;
+    padding: 1.25rem 1rem 5rem;
+  }
+
+  .editorial-image {
+    width: 86%;
+    height: auto;
+    aspect-ratio: 0.78;
+  }
+
+  .editorial-detail {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    width: 72%;
+    margin: -4rem 0 0 auto;
+  }
+
+  .editorial-copy {
+    min-height: 48vh;
+    padding: 3rem 1.5rem;
+  }
+
+  .ritual-tabs {
+    margin-top: 2.5rem;
+    margin-right: -1rem;
+  }
+
+  .ritual-tabs button {
+    padding-inline: 1.1rem;
+  }
+
+  .ritual-image {
+    min-height: 23rem;
+  }
+
+  .ritual-content {
+    padding: 2rem 1.2rem;
+  }
+
+  .catalog-filters {
+    margin-right: -1rem;
+  }
+
+  .closing {
+    padding-inline: 1rem;
+  }
+
+  .closing h2 {
+    font-size: clamp(3.7rem, 18vw, 5.7rem);
+  }
+
+  .footer {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

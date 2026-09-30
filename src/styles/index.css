@@ -1,0 +1,7 @@
+@import "tailwindcss";
+@import "./tokens.css";
+@import "./globals.css";
+@import "./components.css";
+@import "./sections.css";
+@import "./responsive.css";
+@import "./admin.css";

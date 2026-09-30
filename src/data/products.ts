@@ -1,0 +1,55 @@
+import type { Category, Product } from '../types/catalog';
+
+export const categories: Category[] = [
+  { id: 'aceites-corporales', name: 'Aceites corporales' },
+  { id: 'cuidado-capilar', name: 'Cuidado capilar' },
+  { id: 'jabones', name: 'Jabones' },
+];
+
+export const products: Product[] = [
+  {
+    id: 'aceite-corporal-canela',
+    name: 'Aceite de canela y clavos de olor',
+    slug: 'aceite-canela-clavos',
+    category: 'aceites-corporales',
+    shortDescription: 'Aceite corporal de canela y clavos de olor.',
+    benefits: ['Ideal para masajes corporales', 'Aroma cálido y natural'],
+    priceCop: null,
+    image: '/products/aceite-corporal-01.webp',
+    imageAlt: 'Aceite corporal BRAIMARÚ de canela y clavos de olor',
+    featured: true,
+    active: true,
+    sortOrder: 1,
+    ritualTags: ['cuidado-corporal'],
+  },
+  {
+    id: 'shampoo-capilar',
+    name: 'Shampoo capilar',
+    slug: 'shampoo-capilar',
+    category: 'cuidado-capilar',
+    shortDescription: 'Shampoo con ortiga, manzanilla y canela.',
+    benefits: ['Limpia', 'Fortalece', 'Nutre'],
+    priceCop: null,
+    image: '/products/shampoo-capilar-v11.webp',
+    imageAlt: 'Shampoo capilar BRAIMARÚ con ortiga, manzanilla y canela',
+    featured: true,
+    active: true,
+    sortOrder: 2,
+    ritualTags: ['nutrir', 'cuidado-capilar'],
+  },
+  {
+    id: 'acondicionador-capilar',
+    name: 'Acondicionador capilar',
+    slug: 'acondicionador-capilar',
+    category: 'cuidado-capilar',
+    shortDescription: 'Acondicionador con ortiga, manzanilla y canela.',
+    benefits: ['Hidrata', 'Desenreda', 'Suaviza'],
+    priceCop: null,
+    image: '/products/acondicionador-capilar-v11.webp',
+    imageAlt: 'Acondicionador capilar BRAIMARÚ con ortiga, manzanilla y canela',
+    featured: true,
+    active: true,
+    sortOrder: 3,
+    ritualTags: ['hidratar', 'cuidado-capilar'],
+  },
+];

@@ -1,0 +1,45 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "braimaru-web",
+  "main": "./worker/index.ts",
+  "compatibility_date": "2026-09-29",
+  "assets": {
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*", "/media/*", "/admin", "/admin/*"]
+  },
+  "vars": {
+    "BRAIMARU_RESOURCE_MODE": "production"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "braimaru-db",
+      "database_id": "a3d1ef04-5934-4368-b6b7-54aeabb257fa"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "braimaru-media"
+    }
+  ],
+  "previews": {
+    "vars": {
+      "BRAIMARU_RESOURCE_MODE": "preview"
+    },
+    "d1_databases": [
+      {
+        "binding": "DB",
+        "database_name": "braimaru-db-preview",
+        "database_id": "c3909368-8c64-47e4-8bc4-88f2bb24d72a"
+      }
+    ],
+    "r2_buckets": [
+      {
+        "binding": "MEDIA",
+        "bucket_name": "braimaru-media-preview"
+      }
+    ]
+  }
+}
