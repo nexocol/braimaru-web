@@ -3,8 +3,7 @@ name: Phase 3 validation
 on:
   push:
     branches:
-      - feat/v1-data-admin
-      - feat/gate-d-client-ready
+      - "feat/**"
   workflow_dispatch:
 
 permissions:

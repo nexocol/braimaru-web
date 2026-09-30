@@ -3,6 +3,7 @@ import { AdminLogin } from '../admin/AdminLogin';
 import { Header } from '../components/Header/Header';
 import { useStorefrontData } from '../hooks/useStorefrontData';
 import { Footer } from '../layout/Footer/Footer';
+import { BRAIMARU_WHATSAPP_PHONE } from '../lib/whatsapp';
 import { Catalog } from '../sections/Catalog/Catalog';
 import { ClosingCTA } from '../sections/ClosingCTA/ClosingCTA';
 import { EditorialMoment } from '../sections/EditorialMoment/EditorialMoment';
@@ -13,7 +14,11 @@ import { RitualExplorer } from '../sections/RitualExplorer/RitualExplorer';
 
 function StorefrontApp() {
   const storefront = useStorefrontData();
-  const phone = storefront.site.whatsapp_phone;
+  const site = {
+    ...storefront.site,
+    whatsapp_phone: storefront.site.whatsapp_phone ?? BRAIMARU_WHATSAPP_PHONE,
+  };
+  const phone = site.whatsapp_phone;
 
   if (storefront.loading) {
     return (
@@ -23,7 +28,7 @@ function StorefrontApp() {
           <p className="eyebrow">BRAIMARÚ</p>
           <h1>Preparando tu ritual.</h1>
         </main>
-        <Footer site={storefront.site} />
+        <Footer site={site} />
       </>
     );
   }
@@ -37,7 +42,7 @@ function StorefrontApp() {
           <h1>Volvamos a intentarlo en un momento.</h1>
           <p>{storefront.error}</p>
         </main>
-        <Footer site={storefront.site} />
+        <Footer site={site} />
       </>
     );
   }
@@ -54,7 +59,7 @@ function StorefrontApp() {
         <Catalog products={storefront.products} phone={phone} />
         <ClosingCTA phone={phone} />
       </main>
-      <Footer site={storefront.site} />
+      <Footer site={site} />
     </div>
   );
 }
