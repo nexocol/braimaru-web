@@ -4,14 +4,78 @@ import {
   createProduct,
   deleteProduct,
   getProductById,
+  getSiteSettings,
   listAdminProducts,
   updateProduct,
+  updateSiteSettings,
 } from '../db/catalogRepository';
 import { deleteAdminMedia, uploadAdminMedia } from '../media';
 import type { Env } from '../types';
 import { validateProductInput } from '../validation';
 import { apiError, json, readJsonBody } from './http';
 import { serializeProduct } from './serializers';
+
+function normalizeNullableString(value: unknown) {
+  if (value === null || value === undefined) return null;
+  if (typeof value !== 'string') return undefined;
+  const normalized = value.trim();
+  return normalized.length > 0 ? normalized : null;
+}
+
+function validateSiteSettingsInput(raw: Record<string, unknown>) {
+  const errors: Record<string, string> = {};
+  const whatsappPhone = normalizeNullableString(raw.whatsapp_phone);
+  const instagramUrl = normalizeNullableString(raw.instagram_url);
+  const brandEmail = normalizeNullableString(raw.brand_email);
+
+  if (whatsappPhone === undefined) {
+    errors.whatsapp_phone = 'El WhatsApp debe ser texto o quedar vacío.';
+  } else if (whatsappPhone) {
+    const digits = whatsappPhone.replace(/\D/g, '');
+    if (digits.length < 8 || digits.length > 15) {
+      errors.whatsapp_phone = 'Usa un número internacional de 8 a 15 dígitos.';
+    }
+  }
+
+  if (instagramUrl === undefined) {
+    errors.instagram_url = 'Instagram debe ser una URL o quedar vacío.';
+  } else if (instagramUrl) {
+    try {
+      const parsed = new URL(instagramUrl);
+      const hostname = parsed.hostname.toLowerCase();
+      if (
+        (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') ||
+        (hostname !== 'instagram.com' && !hostname.endsWith('.instagram.com'))
+      ) {
+        errors.instagram_url = 'Usa una URL válida de Instagram.';
+      }
+    } catch {
+      errors.instagram_url = 'Usa una URL válida de Instagram.';
+    }
+  }
+
+  if (brandEmail === undefined) {
+    errors.brand_email = 'El correo debe ser texto o quedar vacío.';
+  } else if (
+    brandEmail &&
+    (brandEmail.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(brandEmail))
+  ) {
+    errors.brand_email = 'Usa un correo electrónico válido.';
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return { value: null, errors };
+  }
+
+  return {
+    value: {
+      whatsapp_phone: whatsappPhone ?? null,
+      instagram_url: instagramUrl ?? null,
+      brand_email: brandEmail ?? null,
+    },
+    errors,
+  };
+}
 
 async function requireAdminSession(request: Request, env: Env) {
   const config = getAdminAuthConfig(env);
@@ -48,6 +112,23 @@ export async function handleAdminApi(request: Request, env: Env, pathname: strin
 
   if (!env.DB) {
     return apiError(503, 'database_unavailable', 'Admin database is not configured.');
+  }
+
+  if (pathname === '/api/admin/site' && request.method === 'GET') {
+    return json({ settings: await getSiteSettings(env.DB) });
+  }
+
+  if (pathname === '/api/admin/site' && request.method === 'PUT') {
+    const raw = await readJsonBody<Record<string, unknown>>(request);
+    if (!raw) return apiError(400, 'invalid_json', 'A valid JSON body is required.');
+
+    const validated = validateSiteSettingsInput(raw);
+    if (!validated.value) {
+      return apiError(422, 'validation_error', 'Site settings validation failed.', validated.errors);
+    }
+
+    const settings = await updateSiteSettings(env.DB, validated.value);
+    return json({ settings });
   }
 
   if (pathname === '/api/admin/products' && request.method === 'GET') {
