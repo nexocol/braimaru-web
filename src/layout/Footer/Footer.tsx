@@ -13,7 +13,9 @@ export function Footer({ site }: FooterProps) {
   return (
     <footer className="footer">
       <div className="footer-identity">
-        <div className="footer-brand">BRAIMARÚ</div>
+        <div className="footer-brand">
+          <img src="/brand/braimaru-logo.webp" alt="BRAIMARÚ" />
+        </div>
         <p>Cosmética natural · Colombia</p>
       </div>
 
