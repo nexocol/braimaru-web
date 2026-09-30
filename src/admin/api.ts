@@ -1,4 +1,4 @@
-import type { ApiCategory, ApiProduct } from '../lib/api/types';
+import type { ApiCategory, ApiProduct, SiteSettings } from '../lib/api/types';
 
 export interface AdminProductPayload {
   name: string;
@@ -62,6 +62,22 @@ export async function fetchAdminProducts() {
 
 export async function fetchAdminCategories() {
   return requestJson<{ categories: ApiCategory[] }>('/api/categories');
+}
+
+export async function fetchAdminSiteSettings() {
+  return requestJson<{ settings: SiteSettings }>('/api/admin/site');
+}
+
+export async function updateAdminSiteSettings(settings: SiteSettings) {
+  return requestJson<{ settings: SiteSettings }>('/api/admin/site', {
+    method: 'PUT',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      whatsapp_phone: settings.whatsapp_phone,
+      instagram_url: settings.instagram_url,
+      brand_email: settings.brand_email,
+    }),
+  });
 }
 
 export async function createAdminProduct(payload: AdminProductPayload) {
