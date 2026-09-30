@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { formatCopPrice } from '../lib/format/price';
 import type { ApiCategory, ApiProduct, SiteSettings } from '../lib/api/types';
@@ -103,7 +103,7 @@ export function AdminApp() {
     };
   }, [load, redirectToLogin]);
 
-  const saveSiteSettings = async (event: React.FormEvent<HTMLFormElement>) => {
+  const saveSiteSettings = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSavingSite(true);
     setMessage(null);
