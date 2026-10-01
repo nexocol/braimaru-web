@@ -36,6 +36,22 @@ jobs:
       - name: Probe Preview
         run: curl --fail --show-error --silent "${{ steps.preview.outputs.preview_url }}/api/health"
 
+      - name: Probe visual assets
+        run: |
+          set -e
+          base="${{ steps.preview.outputs.preview_url }}"
+          for path in \
+            /brand/braimaru-logo.webp \
+            /products/aceite-corporal-01.webp \
+            /products/shampoo-capilar-v11.webp \
+            /products/acondicionador-capilar-v11.webp \
+            /editorial/exfoliante-cafe-v11.webp \
+            /products/catalog/jabon-maracuya.webp \
+            /products/catalog/jabon-exfoliante-cafe.webp \
+            /products/catalog/aceite-cafe-naranja.webp; do
+            echo "Checking $path"
+            curl --fail --show-error --silent --head "$base$path" | grep -Ei "^HTTP/|^content-type:|^content-length:"
+          done
       - name: Comment Preview URL
         run: |
           gh pr comment "${{ github.event.pull_request.number }}" \
