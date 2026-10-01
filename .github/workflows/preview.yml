@@ -26,9 +26,8 @@ jobs:
         name: Create or update Cloudflare Preview
         run: |
           set -o pipefail
-          output="$(npx wrangler preview --config dist/braimaru_web/wrangler.json --name "pr-${{ github.event.pull_request.number }}" --json)"
-          printf '%s\n' "$output"
-          preview_url="$(printf '%s' "$output" | jq -er '.preview.urls[0]')"
+          npx wrangler preview --config dist/braimaru_web/wrangler.json --name "pr-${{ github.event.pull_request.number }}" --json
+          preview_url="https://pr-${{ github.event.pull_request.number }}-braimaru-web.nexocolmj.workers.dev"
           echo "preview_url=$preview_url" >> "$GITHUB_OUTPUT"
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
