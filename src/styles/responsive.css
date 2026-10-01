@@ -60,11 +60,6 @@
     width: 65%;
   }
 
-  .hero-logo-stamp {
-    left: -1%;
-    width: 34%;
-  }
-
   .hero-product-note {
     right: 2%;
   }
@@ -197,12 +192,6 @@
 
   .hero-visual-mask {
     width: 68%;
-  }
-
-  .hero-logo-stamp {
-    bottom: 8%;
-    left: 0;
-    width: 32%;
   }
 
   .hero-product-note {
