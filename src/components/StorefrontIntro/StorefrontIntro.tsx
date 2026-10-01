@@ -33,7 +33,10 @@ export function StorefrontIntro({ ready, onComplete }: StorefrontIntroProps) {
     const elapsed = performance.now() - startedAt.current;
     const hold = Math.max(0, minimum - elapsed);
 
-    const timer = window.setTimeout(() => setPhase('leaving'), hold);
+    const timer = window.setTimeout(() => {
+      setPhase('leaving');
+      completeRef.current();
+    }, hold);
     return () => window.clearTimeout(timer);
   }, [phase, ready]);
 
@@ -43,7 +46,6 @@ export function StorefrontIntro({ ready, onComplete }: StorefrontIntroProps) {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const timer = window.setTimeout(() => {
       setPhase('hidden');
-      completeRef.current();
     }, reduced ? 0 : EXIT_MS);
 
     return () => window.clearTimeout(timer);
