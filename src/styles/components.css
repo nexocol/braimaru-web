@@ -19,8 +19,8 @@
 
 .brand-lockup {
   display: inline-flex;
-  width: 8.4rem;
-  height: 2.55rem;
+  width: 8.2rem;
+  height: 2.7rem;
   align-items: center;
 }
 
@@ -29,6 +29,7 @@
   height: 100%;
   object-fit: contain;
   object-position: center;
+  mix-blend-mode: multiply;
 }
 
 .nav {
