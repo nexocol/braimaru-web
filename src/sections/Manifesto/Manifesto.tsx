@@ -11,17 +11,17 @@ export function Manifesto() {
           viewport={{ once: true, amount: 0.35 }}
           transition={{ duration: 0.65 }}
         >
-          Tu piel merece un cuidado que <em>se sienta propio.</em>
+          Cuidarte no debería sentirse como una tarea. <em>Debería sentirse bien.</em>
         </motion.h2>
         <p className="manifesto-copy">
-          BRAIMARÚ transforma la rutina en una pausa: fórmulas, aromas y texturas que acompañan el cuerpo y el cabello desde una mirada más consciente.
+          BRAIMARÚ reúne textura, aroma y bienestar para acompañar el cuerpo y el cabello con una rutina más cercana, sensorial y fácil de disfrutar.
         </p>
       </div>
 
       <motion.figure
         className="manifesto-detail"
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 24, rotate: 1.2 }}
+        whileInView={{ opacity: 1, y: 0, rotate: -1.2 }}
         viewport={{ once: true, amount: 0.3 }}
         transition={{ duration: 0.7, delay: 0.08 }}
       >

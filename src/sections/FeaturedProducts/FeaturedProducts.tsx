@@ -17,9 +17,11 @@ export function FeaturedProducts({ products, phone = null }: FeaturedProductsPro
       <div className="featured-heading">
         <div>
           <p className="eyebrow">Selección BRAIMARÚ</p>
-          <h2>Favoritos para empezar.</h2>
+          <h2>Tres favoritos.<br /><em>Un primer ritual.</em></h2>
         </div>
-        <p>Una selección breve para descubrir la marca sin convertir la experiencia en una lista interminable.</p>
+        <p>
+          Si no sabes por dónde empezar, aquí tienes una entrada rápida al universo de la marca.
+        </p>
       </div>
 
       <div className="featured-layout">

@@ -12,7 +12,7 @@ export function Header({ phone = null }: HeaderProps) {
   return (
     <header className="site-header">
       <a className="brand-lockup" href="#inicio" aria-label="BRAIMARÚ, ir al inicio">
-        <img src="/brand/braimaru-logo.webp" alt="BRAIMARÚ" width="156" height="82" />
+        <img src="/brand/braimaru-logo-premium.png" alt="BRAIMARÚ" width="400" height="268" />
       </a>
 
       <button

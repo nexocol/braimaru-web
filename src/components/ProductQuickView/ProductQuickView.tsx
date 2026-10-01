@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { formatCopPrice } from '../../lib/format/price';
 import { buildWhatsAppUrl } from '../../lib/whatsapp';
@@ -18,6 +18,12 @@ function displayDescription(product: Product) {
 }
 
 export function ProductQuickView({ product, phone = null, onClose }: ProductQuickViewProps) {
+  const [imageFailed, setImageFailed] = useState(false);
+
+  useEffect(() => {
+    setImageFailed(false);
+  }, [product?.id]);
+
   useEffect(() => {
     if (!product) return;
 
@@ -64,7 +70,13 @@ export function ProductQuickView({ product, phone = null, onClose }: ProductQuic
             </button>
 
             <div className="quickview-media">
-              {product.image ? <img src={product.image} alt={product.imageAlt} /> : <div className="product-media-brand"><span>BM</span></div>}
+              {product.image && !imageFailed ? (
+                <img src={product.image} alt={product.imageAlt} onError={() => setImageFailed(true)} />
+              ) : (
+                <div className="product-media-brand" role="img" aria-label={`BRAIMARÚ — ${product.name}`}>
+                  <img src="/brand/braimaru-logo-premium.png" alt="" aria-hidden="true" />
+                </div>
+              )}
             </div>
 
             <div className="quickview-copy">
@@ -81,7 +93,7 @@ export function ProductQuickView({ product, phone = null, onClose }: ProductQuic
               <div className="quickview-footer">
                 <span>{formatCopPrice(product.priceCop) ?? 'Consultar precio'}</span>
                 <a
-                  className="button primary"
+                  className="button primary magnetic-button"
                   href={buildWhatsAppUrl({ phone, productName: product.name })}
                   target="_blank"
                   rel="noreferrer"

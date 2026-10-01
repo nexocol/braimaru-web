@@ -5,10 +5,10 @@ export function EditorialMoment() {
     <section id="editorial" className="campaign-moment">
       <motion.figure
         className="campaign-moment-media"
-        initial={{ opacity: 0, clipPath: 'inset(6% 0 6% 0)' }}
-        whileInView={{ opacity: 1, clipPath: 'inset(0% 0 0% 0)' }}
+        initial={{ opacity: 0, clipPath: 'inset(6% 2% 6% 2% round 3rem)' }}
+        whileInView={{ opacity: 1, clipPath: 'inset(0% 0% 0% 0% round 0rem)' }}
         viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 0.85 }}
       >
         <img
           src="/products/catalog/aceite-naranja-calendula.webp"
@@ -16,6 +16,11 @@ export function EditorialMoment() {
           loading="lazy"
           width="1100"
           height="1400"
+          onError={(event) => {
+            if (event.currentTarget.dataset.fallbackApplied) return;
+            event.currentTarget.dataset.fallbackApplied = 'true';
+            event.currentTarget.src = '/editorial/cafe-naranja-campaign.webp';
+          }}
         />
       </motion.figure>
 
@@ -27,9 +32,9 @@ export function EditorialMoment() {
         transition={{ duration: 0.7 }}
       >
         <p className="eyebrow">Cuidado consciente</p>
-        <h2>La rutina cambia cuando el cuidado <em>se disfruta.</em></h2>
+        <h2>Tu rutina puede sentirse <em>mucho mejor.</em></h2>
         <p>
-          BRAIMARÚ propone momentos simples: una textura agradable, un aroma cálido y un gesto que devuelve atención al cuerpo.
+          Una textura agradable, un aroma cálido y unos minutos para ti. No hace falta complicar el cuidado para hacerlo especial.
         </p>
         <div className="campaign-moment-notes" aria-label="Principios de la experiencia">
           <span>Textura</span>

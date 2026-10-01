@@ -1,6 +1,7 @@
 import { AdminApp } from '../admin/AdminApp';
 import { AdminLogin } from '../admin/AdminLogin';
 import { Header } from '../components/Header/Header';
+import { PointerAura } from '../components/PointerAura/PointerAura';
 import { useStorefrontData } from '../hooks/useStorefrontData';
 import { Footer } from '../layout/Footer/Footer';
 import { BRAIMARU_WHATSAPP_PHONE } from '../lib/whatsapp';
@@ -51,6 +52,7 @@ function StorefrontApp() {
 
   return (
     <div data-catalog-source={storefront.source ?? undefined}>
+      <PointerAura />
       <Header phone={phone} />
       <main>
         <Hero phone={phone} />

@@ -23,7 +23,7 @@ const collections: CollectionDefinition[] = [
     id: 'cuerpo',
     label: 'Cuerpo',
     kicker: 'Aceites + cremas',
-    copy: 'Texturas cálidas para masaje, hidratación y cuidado diario.',
+    copy: 'Masaje, hidratación y texturas que hacen más agradable el cuidado cotidiano.',
     image: '/editorial/cafe-naranja-campaign.webp',
     imageAlt: 'Aceite corporal Café y Naranja BRAIMARÚ',
     matches: (product) => product.category === 'aceites-corporales' || product.category === 'cremas-corporales',
@@ -32,7 +32,7 @@ const collections: CollectionDefinition[] = [
     id: 'cabello',
     label: 'Cabello',
     kicker: 'Rutina capilar',
-    copy: 'Limpieza, suavidad y protección dentro de un mismo ritual.',
+    copy: 'Limpieza, suavidad y protección en una selección pensada para acompañarse.',
     image: '/editorial/hair-line-v11.webp',
     imageAlt: 'Línea de cuidado capilar BRAIMARÚ',
     matches: (product) => product.category === 'cuidado-capilar',
@@ -41,7 +41,7 @@ const collections: CollectionDefinition[] = [
     id: 'jabones',
     label: 'Jabones',
     kicker: 'Limpieza sensorial',
-    copy: 'Ingredientes, texturas y aromas para renovar el cuidado corporal.',
+    copy: 'Aromas, ingredientes y texturas para que la ducha también se sienta como una pausa.',
     image: '/products/catalog/jabon-exfoliante-cafe.webp',
     imageAlt: 'Jabón exfoliante de café BRAIMARÚ',
     matches: (product) => product.category === 'jabones',
@@ -50,7 +50,7 @@ const collections: CollectionDefinition[] = [
     id: 'labios',
     label: 'Labios',
     kicker: 'Hidratación',
-    copy: 'Un gesto pequeño para mantener el cuidado cerca durante el día.',
+    copy: 'Un gesto pequeño, fácil de llevar contigo y simple de sumar a cualquier rutina.',
     image: '/products/catalog/balsamo-labial.webp',
     imageAlt: 'Bálsamo labial BRAIMARÚ',
     matches: (product) => product.category === 'cuidado-labial',
@@ -77,9 +77,11 @@ export function CategoryShowcase({ products }: CategoryShowcaseProps) {
       <div className="collections-heading">
         <div>
           <p className="eyebrow">Explora BRAIMARÚ</p>
-          <h2>Elige por universo,<br />no por catálogo.</h2>
+          <h2>Empieza por cómo quieres <em>sentirte.</em></h2>
         </div>
-        <p>Cuatro formas de entrar a la marca según el momento de cuidado que quieres construir.</p>
+        <p>
+          Entra por el ritual que buscas y descubre la parte de BRAIMARÚ que mejor encaja con tu momento.
+        </p>
       </div>
 
       <div className="collections-stage">
@@ -105,12 +107,21 @@ export function CategoryShowcase({ products }: CategoryShowcaseProps) {
           <motion.figure
             key={active.id}
             className="collections-visual"
-            initial={{ opacity: 0, clipPath: 'inset(4% 0 4% 0)' }}
-            animate={{ opacity: 1, clipPath: 'inset(0% 0 0% 0)' }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.42 }}
+            initial={{ opacity: 0, clipPath: 'inset(5% 4% 5% 4% round 3rem)' }}
+            animate={{ opacity: 1, clipPath: 'inset(0% 0% 0% 0% round 0rem)' }}
+            exit={{ opacity: 0, scale: 0.99 }}
+            transition={{ duration: 0.48 }}
           >
-            <img src={active.image} alt={active.imageAlt} loading="lazy" />
+            <img
+              src={active.image}
+              alt={active.imageAlt}
+              loading="lazy"
+              onError={(event) => {
+                if (event.currentTarget.dataset.fallbackApplied) return;
+                event.currentTarget.dataset.fallbackApplied = 'true';
+                event.currentTarget.src = '/editorial/family-v11.webp';
+              }}
+            />
             <figcaption>
               <span>{active.kicker}</span>
               <p>{active.copy}</p>

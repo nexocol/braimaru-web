@@ -4,7 +4,11 @@
   }
 
   .hero {
-    grid-template-columns: minmax(0, 0.95fr) minmax(22rem, 1.05fr);
+    grid-template-columns: minmax(0, 0.9fr) minmax(22rem, 1.1fr);
+  }
+
+  .hero-product-orbit {
+    right: -2%;
   }
 
   .ritual-experience {
@@ -16,12 +20,12 @@
   .site-header {
     min-height: 4.7rem;
     grid-template-columns: auto auto;
-    padding-block: 0.5rem;
+    padding-block: 0.45rem;
   }
 
   .brand-lockup {
-    width: 7.3rem;
-    height: 2.9rem;
+    width: 7.8rem;
+    height: 3.1rem;
   }
 
   .menu-toggle {
@@ -39,6 +43,7 @@
     gap: 0;
     padding: 0.7rem;
     border: 1px solid var(--line);
+    border-radius: 1.2rem;
     background: rgba(245,239,231,0.98);
     box-shadow: var(--shadow-soft);
   }
@@ -64,9 +69,9 @@
   .hero {
     min-height: auto;
     grid-template-columns: 1fr;
-    gap: 2.2rem;
+    gap: 2.6rem;
     padding-top: 7.2rem;
-    padding-bottom: 3.5rem;
+    padding-bottom: 4rem;
   }
 
   .hero-copy {
@@ -77,11 +82,29 @@
     font-size: clamp(4.4rem, 13vw, 7rem);
   }
 
+  .hero-media {
+    width: min(100%, 38rem);
+    margin-inline: auto;
+    padding-inline: 2.2rem;
+  }
+
   .hero-media-shell {
     width: min(100%, 32rem);
     margin-inline: auto;
-    aspect-ratio: 0.88;
-    border-radius: 38% 38% 1.2rem 1.2rem;
+    aspect-ratio: 0.9;
+    border-radius: 42% 42% 18% 18% / 28% 28% 15% 15%;
+  }
+
+  .hero-brand-seal {
+    bottom: 0;
+    left: 0;
+    width: 8.2rem;
+  }
+
+  .hero-product-orbit {
+    top: 8%;
+    right: 0;
+    width: 7.4rem;
   }
 
   .manifesto {
@@ -161,11 +184,16 @@
   .campaign-moment {
     min-height: auto;
     grid-template-columns: 1fr;
+    border-radius: 0 4rem 0 4rem;
   }
 
   .campaign-moment-media,
   .campaign-moment-media img {
     min-height: 30rem;
+  }
+
+  .campaign-moment-media {
+    border-radius: 0 0 4rem 0;
   }
 
   .campaign-moment-copy {
@@ -195,6 +223,7 @@
 
   .ritual-experience {
     grid-template-columns: 1fr;
+    border-radius: 3rem 1rem 3rem 1rem;
   }
 
   .ritual-tabs {
@@ -216,6 +245,10 @@
     flex: 0 0 auto;
     border-right: 1px solid var(--line);
     border-bottom: 0;
+  }
+
+  .ritual-tabs button:hover {
+    padding-left: 0.9rem;
   }
 
   .ritual-visual,
@@ -244,6 +277,15 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .catalog-grid .product-card:nth-child(4n + 2),
+  .catalog-grid .product-card:nth-child(4n + 4) {
+    padding-top: 0;
+  }
+
+  .catalog-grid .product-card:nth-child(even) {
+    padding-top: 1.4rem;
+  }
+
   .quickview {
     grid-template-columns: 1fr 1fr;
   }
@@ -252,6 +294,7 @@
     min-height: auto;
     flex-direction: column;
     align-items: flex-start;
+    border-radius: 4rem 4rem 0 0;
   }
 }
 
@@ -265,7 +308,7 @@
   }
 
   .hero-title {
-    font-size: clamp(3.8rem, 17vw, 5.6rem);
+    font-size: clamp(3.75rem, 16.5vw, 5.5rem);
   }
 
   .hero-lede {
@@ -287,6 +330,27 @@
 
   .hero-meta span + span::before {
     margin-right: 0.8rem;
+  }
+
+  .hero-media {
+    padding: 0 1.35rem 1.8rem;
+  }
+
+  .hero-media-shell {
+    border-radius: 39% 39% 16% 16% / 24% 24% 13% 13%;
+  }
+
+  .hero-brand-seal {
+    bottom: 0;
+    left: 0.2rem;
+    width: 6.7rem;
+  }
+
+  .hero-product-orbit {
+    top: 7%;
+    right: 0;
+    width: 5.8rem;
+    border-width: 0.3rem;
   }
 
   .hero-media-caption {
@@ -311,6 +375,10 @@
     font-size: clamp(3rem, 14vw, 4.6rem);
   }
 
+  .collections::before {
+    display: none;
+  }
+
   .collections-list {
     margin-inline: -0.2rem;
     overflow-x: auto;
@@ -322,6 +390,10 @@
 
   .collections-list::-webkit-scrollbar {
     display: none;
+  }
+
+  .collections-visual {
+    border-radius: 3rem 0.8rem 3rem 0.8rem;
   }
 
   .collections-visual,
@@ -359,9 +431,17 @@
     grid-template-columns: 1fr;
   }
 
+  .campaign-moment {
+    border-radius: 0 2.6rem 0 2.6rem;
+  }
+
   .campaign-moment-media,
   .campaign-moment-media img {
     min-height: 24rem;
+  }
+
+  .campaign-moment-media {
+    border-radius: 0 0 2.6rem 0;
   }
 
   .campaign-moment-copy h2 {
@@ -380,6 +460,10 @@
     margin-top: 1rem;
   }
 
+  .ritual-experience {
+    border-radius: 2.4rem 0.8rem 2.4rem 0.8rem;
+  }
+
   .ritual-visual,
   .ritual-visual img {
     min-height: 21rem;
@@ -387,6 +471,10 @@
 
   .brand-story-copy h2 {
     font-size: clamp(3rem, 13vw, 4.6rem);
+  }
+
+  .brand-story-visual {
+    border-radius: 0.8rem 3rem 0.8rem 3rem;
   }
 
   .brand-story-visual > img {
@@ -417,12 +505,28 @@
     grid-template-columns: 1fr;
   }
 
+  .catalog-grid .product-card:nth-child(even) {
+    padding-top: 0;
+  }
+
   .product-media {
     aspect-ratio: 1 / 1.03;
+    border-radius: 32% 32% 0.8rem 0.8rem;
+  }
+
+  .product-card:nth-child(4n + 2) .product-media,
+  .product-card:nth-child(4n + 3) .product-media,
+  .product-card:nth-child(4n + 4) .product-media {
+    border-radius: 32% 32% 0.8rem 0.8rem;
   }
 
   .product-meta h3 {
     font-size: 1.65rem;
+  }
+
+  .product-media-action {
+    opacity: 1;
+    transform: none;
   }
 
   .quickview-backdrop {
@@ -435,6 +539,7 @@
     max-height: 92svh;
     grid-template-columns: 1fr;
     overflow-y: auto;
+    border-radius: 2.3rem 2.3rem 0 0;
   }
 
   .quickview-media {
@@ -464,6 +569,10 @@
     width: 100%;
   }
 
+  .closing {
+    border-radius: 3rem 3rem 0 0;
+  }
+
   .closing h2 {
     font-size: clamp(3rem, 13vw, 4.8rem);
   }
@@ -489,5 +598,9 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .pointer-aura {
+    display: none;
   }
 }

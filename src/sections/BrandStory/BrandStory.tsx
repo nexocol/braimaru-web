@@ -37,7 +37,7 @@ export function BrandStory() {
           height="825"
         />
         <figcaption>
-          <img src="/brand/braimaru-logo.webp" alt="" aria-hidden="true" />
+          <img src="/brand/braimaru-logo-premium.png" alt="" aria-hidden="true" />
           <span>Belleza natural · bienestar real</span>
         </figcaption>
       </motion.figure>
