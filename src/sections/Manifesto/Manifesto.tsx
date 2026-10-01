@@ -23,6 +23,24 @@ export function Manifesto() {
         una tarea. <em>Debería sentirse</em> <Pill src="/products/catalog/balsamo-labial.webp" className="pill--tube" /> <em>bien.</em>
       </h2>
 
+      <aside className="manifesto-aside" data-fade data-delay="0.16" aria-label="Universo de cuidado BRAIMARÚ">
+        <figure className="manifesto-aside-media">
+          <img
+            src="/products/catalog/crema-manos-corporal.webp"
+            alt="Crema de manos y corporal BRAIMARÚ"
+            width="700"
+            height="900"
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
+        <div className="manifesto-aside-copy">
+          <span className="manifesto-aside-rule" aria-hidden="true" />
+          <p className="eyebrow">Cuerpo · cabello · labios</p>
+          <strong>Rituales simples para volver al bienestar.</strong>
+        </div>
+      </aside>
+
       <div className="manifesto-foot" data-stagger>
         <p>
           BRAIMARÚ reúne textura, aroma y bienestar para acompañar el cuerpo, el cabello y los labios con una rutina cercana, sensorial y fácil de disfrutar.

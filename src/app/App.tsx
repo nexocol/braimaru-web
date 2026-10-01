@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect } from 'react';
+import { FloatingWhatsApp } from '../components/FloatingWhatsApp/FloatingWhatsApp';
 import { Header } from '../components/Header/Header';
 import { PointerAura } from '../components/PointerAura/PointerAura';
 import { QuickViewProvider } from '../components/ProductQuickView/QuickViewProvider';
@@ -76,6 +77,7 @@ function StorefrontApp() {
       <div data-catalog-source={storefront.source ?? undefined}>
         <PointerAura />
         <Header phone={phone} />
+        <FloatingWhatsApp phone={phone} />
         <main>
           <Hero phone={phone} products={storefront.products} />
           <Manifesto />
