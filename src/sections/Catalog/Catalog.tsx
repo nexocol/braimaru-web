@@ -50,7 +50,7 @@ export function Catalog({ products, phone = null }: CatalogProps) {
       <div className="section-head">
         <div>
           <p className="eyebrow" data-fade>Catálogo</p>
-          <h2 id="catalog-title" data-lines>Todo BRAIMARÚ,<br />en un solo lugar.</h2>
+          <h2 id="catalog-title" data-lines aria-label="Todo BRAIMARÚ, en un solo lugar.">Todo BRAIMARÚ,<br />en un solo lugar.</h2>
         </div>
         <p data-fade data-delay="0.1">
           Abre el producto que te interese y continúa la conversación por WhatsApp. Precios y disponibilidad se confirman por ahí.

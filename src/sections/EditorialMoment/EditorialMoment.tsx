@@ -5,8 +5,8 @@ import { useMagnetic, usePointerDepth, useScrollScenes } from '../../lib/motion'
 
 const depth = (value: number, tilt = 0) => ({ '--depth': value, '--tilt': tilt }) as CSSProperties;
 
-// Ingredients named on the product label shown in the photo (Aceite corporal Caléndula y Naranja).
-const labelNotes = ['Caléndula', 'Naranja', 'Vitamina E', 'Ácido hialurónico'];
+// Experience cues only: avoid publishing formula claims until the client confirms them.
+const experienceNotes = ['Ritual corporal', 'Masaje', 'Cuidado diario', 'Pausa sensorial'];
 
 export function EditorialMoment() {
   const root = useRef<HTMLElement>(null);
@@ -19,12 +19,12 @@ export function EditorialMoment() {
       <div className="campaign-inner">
         <div className="campaign-copy">
           <p className="eyebrow" data-fade>Cuidado consciente</p>
-          <h2 data-lines>Tu rutina puede sentirse <em>mucho mejor.</em></h2>
+          <h2 data-lines aria-label="Tu rutina puede sentirse mucho mejor.">Tu rutina puede sentirse <em>mucho mejor.</em></h2>
           <p className="campaign-lede" data-fade data-delay="0.1">
             Una textura agradable, un aroma cálido y unos minutos para ti. El cuidado no tiene que ser complicado para sentirse especial.
           </p>
-          <ul className="campaign-notes" aria-label="En la etiqueta del Aceite corporal Caléndula y Naranja" data-stagger>
-            {labelNotes.map((note) => <li key={note}>{note}</li>)}
+          <ul className="campaign-notes" aria-label="Claves del ritual corporal" data-stagger>
+            {experienceNotes.map((note) => <li key={note}>{note}</li>)}
           </ul>
           <a
             className="button light"

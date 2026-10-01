@@ -99,7 +99,7 @@ export function CategoryShowcase({ products }: CategoryShowcaseProps) {
       <div className="section-head">
         <div>
           <p className="eyebrow" data-fade>Explora BRAIMARÚ</p>
-          <h2 data-lines>Empieza por cómo<br />quieres <em>sentirte.</em></h2>
+          <h2 data-lines aria-label="Empieza por cómo quieres sentirte.">Empieza por cómo<br />quieres <em>sentirte.</em></h2>
         </div>
         <p data-fade data-delay="0.1">
           Elige una línea y descubre los productos que mejor encajan con tu momento.

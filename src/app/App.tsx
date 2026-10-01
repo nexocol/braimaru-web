@@ -1,6 +1,4 @@
-import { useEffect } from 'react';
-import { AdminApp } from '../admin/AdminApp';
-import { AdminLogin } from '../admin/AdminLogin';
+import { lazy, Suspense, useEffect } from 'react';
 import { Header } from '../components/Header/Header';
 import { PointerAura } from '../components/PointerAura/PointerAura';
 import { QuickViewProvider } from '../components/ProductQuickView/QuickViewProvider';
@@ -17,6 +15,18 @@ import { FeaturedProducts } from '../sections/FeaturedProducts/FeaturedProducts'
 import { Hero } from '../sections/Hero/Hero';
 import { Manifesto } from '../sections/Manifesto/Manifesto';
 import { RitualExplorer } from '../sections/RitualExplorer/RitualExplorer';
+
+const LazyAdminApp = lazy(() => import('../admin/AdminApp').then((module) => ({ default: module.AdminApp })));
+const LazyAdminLogin = lazy(() => import('../admin/AdminLogin').then((module) => ({ default: module.AdminLogin })));
+
+function AdminFallback() {
+  return (
+    <main className="storefront-state" aria-live="polite">
+      <p className="eyebrow">BRAIMARÚ</p>
+      <h1>Cargando administración.</h1>
+    </main>
+  );
+}
 
 function StorefrontApp() {
   const storefront = useStorefrontData();
@@ -85,11 +95,19 @@ function StorefrontApp() {
 
 export function App() {
   if (window.location.pathname === '/admin/login') {
-    return <AdminLogin />;
+    return (
+      <Suspense fallback={<AdminFallback />}>
+        <LazyAdminLogin />
+      </Suspense>
+    );
   }
 
   if (window.location.pathname === '/admin' || window.location.pathname.startsWith('/admin/')) {
-    return <AdminApp />;
+    return (
+      <Suspense fallback={<AdminFallback />}>
+        <LazyAdminApp />
+      </Suspense>
+    );
   }
 
   return <StorefrontApp />;

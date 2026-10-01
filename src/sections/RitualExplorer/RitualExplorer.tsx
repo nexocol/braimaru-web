@@ -122,7 +122,7 @@ export function RitualExplorer({ products, phone = null }: RitualExplorerProps) 
       <div className="section-head">
         <div>
           <p className="eyebrow" data-fade>Encuentra tu ritual</p>
-          <h2 data-lines>Elige lo que<br />quieres <em>sentir hoy.</em></h2>
+          <h2 data-lines aria-label="Elige lo que quieres sentir hoy.">Elige lo que<br />quieres <em>sentir hoy.</em></h2>
         </div>
         <p data-fade data-delay="0.1">Cinco entradas al universo BRAIMARÚ. Escoge una y ve qué productos la componen.</p>
       </div>

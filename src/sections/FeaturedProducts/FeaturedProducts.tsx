@@ -21,7 +21,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
       <div className="section-head">
         <div>
           <p className="eyebrow" data-fade>Selección BRAIMARÚ</p>
-          <h2 data-lines>Para empezar,<br /><em>tres favoritos.</em></h2>
+          <h2 data-lines aria-label="Para empezar, tres favoritos.">Para empezar,<br /><em>tres favoritos.</em></h2>
         </div>
         <p data-fade data-delay="0.1">
           Una entrada rápida al universo de la marca: abre cualquiera y escríbenos por WhatsApp.

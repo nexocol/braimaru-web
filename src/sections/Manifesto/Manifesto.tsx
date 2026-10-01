@@ -18,7 +18,7 @@ export function Manifesto() {
     <section className="manifesto section-shell" ref={root}>
       <p className="eyebrow" data-fade>Nuestra esencia</p>
 
-      <h2 className="manifesto-title" data-lines>
+      <h2 className="manifesto-title" data-lines aria-label="Cuidarte no debería sentirse como una tarea. Debería sentirse bien.">
         Cuidarte no debería sentirse <Pill src="/editorial/exfoliante-cafe-v11.webp" className="pill--soap" /> como
         una tarea. <em>Debería sentirse</em> <Pill src="/products/catalog/balsamo-labial.webp" className="pill--tube" /> <em>bien.</em>
       </h2>
