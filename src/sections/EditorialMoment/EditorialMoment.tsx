@@ -6,7 +6,7 @@ export function EditorialMoment() {
       <div className="editorial-visuals">
         <motion.div
           className="editorial-image"
-          initial={{ clipPath: 'inset(8% 0 8% 0)', opacity: 0.8 }}
+          initial={{ clipPath: 'inset(4% 0 4% 0)', opacity: 1 }}
           whileInView={{ clipPath: 'inset(0% 0 0% 0)', opacity: 1 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.85 }}
@@ -14,7 +14,7 @@ export function EditorialMoment() {
           <img
             src="/editorial/hair-line-v11.webp"
             alt="Línea capilar BRAIMARÚ con shampoo, acondicionador y termoprotector"
-            loading="lazy"
+            loading="eager"
             width="600"
             height="711"
           />
@@ -22,7 +22,7 @@ export function EditorialMoment() {
 
         <motion.figure
           className="editorial-detail"
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 1, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.7, delay: 0.12 }}
