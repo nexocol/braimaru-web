@@ -90,16 +90,6 @@
   background: var(--shell);
 }
 
-/* hero logo stamp intentionally removed; brand is carried by header */
-.hero-logo-stamp {
-  position: absolute;
-  bottom: 5%;
-  left: -7%;
-  z-index: 3;
-  width: 40%;
-  opacity: 0;
-  pointer-events: none;
-}
 
 .hero-product-note {
   position: absolute;
