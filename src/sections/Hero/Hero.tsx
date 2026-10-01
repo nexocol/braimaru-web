@@ -1,151 +1,119 @@
-import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useReducedMotion } from 'motion/react';
+import { useRef, type CSSProperties } from 'react';
 import { ArrowIcon } from '../../components/ArrowIcon/ArrowIcon';
+import { useQuickView } from '../../components/ProductQuickView/quickViewContext';
+import { requestCatalogFilter } from '../../lib/catalogBus';
+import { useMagnetic, usePointerDepth, useScrollScenes } from '../../lib/motion';
 import { buildWhatsAppUrl } from '../../lib/whatsapp';
-
-gsap.registerPlugin(ScrollTrigger);
+import type { Product } from '../../types/catalog';
 
 interface HeroProps {
   phone?: string | null;
+  products: Product[];
 }
 
-export function Hero({ phone = null }: HeroProps) {
+const quickLinks = [
+  { label: 'Cuerpo', filter: 'aceites-corporales' as const },
+  { label: 'Cabello', filter: 'cuidado-capilar' as const },
+  { label: 'Jabones', filter: 'jabones' as const },
+  { label: 'Labios', filter: 'cuidado-labial' as const },
+];
+
+const depth = (value: number, tilt = 0) => ({ '--depth': value, '--tilt': tilt }) as CSSProperties;
+
+export function Hero({ phone = null, products }: HeroProps) {
   const root = useRef<HTMLElement>(null);
-  const reducedMotion = useReducedMotion();
+  const stage = useRef<HTMLDivElement>(null);
+  const { open } = useQuickView();
+  const featuredChip = products.find((product) => product.id === 'balsamo-labial' && product.active);
 
-  useEffect(() => {
-    if (!root.current || reducedMotion) return;
-
-    const context = gsap.context(() => {
-      gsap.from('[data-hero-reveal]', {
-        y: 34,
-        opacity: 0,
-        duration: 1,
-        stagger: 0.11,
-        ease: 'power3.out',
-      });
-
-      gsap.from('[data-hero-card]', {
-        y: 44,
-        scale: 0.97,
-        opacity: 0,
-        duration: 1.2,
-        stagger: 0.12,
-        ease: 'power3.out',
-      });
-
-      gsap.from('.hero-logo-stamp', {
-        y: 22,
-        opacity: 0,
-        duration: 1,
-        delay: 0.45,
-        ease: 'power2.out',
-      });
-
-      gsap.to('.hero-campaign-main', {
-        yPercent: 4,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: root.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.55,
-        },
-      });
-
-      gsap.to('.hero-campaign-side', {
-        yPercent: -7,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: root.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.7,
-        },
-      });
-
-      gsap.to('.hero-campaign-detail', {
-        yPercent: 9,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: root.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.75,
-        },
-      });
-    }, root);
-
-    return () => context.revert();
-  }, [reducedMotion]);
+  useScrollScenes(root);
+  usePointerDepth(root);
+  useMagnetic(root);
 
   return (
     <section id="inicio" className="hero" ref={root}>
-      <div className="hero-grid-lines" aria-hidden="true" />
-      <div className="hero-kicker" data-hero-reveal>Cosmética natural · Colombia</div>
+      <div className="hero-glow" aria-hidden="true" />
 
-      <h1 className="hero-title" data-hero-reveal>
-        <span>Belleza</span>
-        <span>natural.</span>
-      </h1>
+      <div className="hero-copy">
+        <p className="eyebrow" data-fade>Cosmética natural · Colombia</p>
 
-      <div className="hero-campaign" aria-hidden="true">
-        <div className="hero-campaign-backdrop" />
+        <h1 className="hero-title" data-lines aria-label="Belleza natural, bienestar real.">
+          <span className="line-block">Belleza natural,</span>
+          <span className="line-block"><em>bienestar real.</em></span>
+        </h1>
 
-        <figure className="hero-campaign-main" data-hero-card>
-          <img
-            src="/editorial/cafe-naranja-campaign.webp"
-            alt=""
-            width="900"
-            height="1180"
-            fetchPriority="high"
-          />
-        </figure>
+        <p className="hero-lede" data-fade data-delay="0.12">
+          Aceites, jabones, cuidado capilar y labial para convertir tu rutina diaria en un momento de bienestar.
+        </p>
 
-        <figure className="hero-campaign-side" data-hero-card>
-          <img
-            src="/products/catalog/crema-manos-corporal.webp"
-            alt=""
-            width="900"
-            height="1180"
-            fetchPriority="high"
-          />
-        </figure>
-
-        <figure className="hero-campaign-detail" data-hero-card>
-          <img
-            src="/products/catalog/balsamo-labial.webp"
-            alt=""
-            width="720"
-            height="960"
-          />
-        </figure>
-
-        <img
-          className="hero-logo-stamp"
-          src="/brand/braimaru-logo.webp"
-          alt=""
-          width="420"
-          height="300"
-        />
-
-        <span className="hero-campaign-caption">Cuerpo · cabello · bienestar</span>
-      </div>
-
-      <div className="hero-copy" data-hero-reveal>
-        <p>Cuidado consciente, texturas cálidas y rituales pensados para habitar tu bienestar.</p>
-        <div className="hero-actions">
-          <a className="button primary" href="#productos">Descubrir productos <ArrowIcon /></a>
-          <a className="button ghost" href={buildWhatsAppUrl({ phone })} target="_blank" rel="noreferrer">
-            Hablar por WhatsApp
+        <div className="hero-actions" data-fade data-delay="0.2">
+          <a className="button primary" href="#catalogo" data-magnetic>
+            Ver catálogo <ArrowIcon />
+          </a>
+          <a
+            className="button ghost"
+            href={buildWhatsAppUrl({ phone })}
+            target="_blank"
+            rel="noreferrer"
+            data-magnetic
+          >
+            Escribir por WhatsApp
           </a>
         </div>
+
+        <ul className="hero-quick" aria-label="Explorar por línea" data-fade data-delay="0.28">
+          {quickLinks.map((link) => (
+            <li key={link.label}>
+              <a
+                href="#catalogo"
+                onClick={() => requestCatalogFilter(link.filter)}
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
 
-      <div className="hero-footnote" data-hero-reveal>
-        01 — Belleza natural, bienestar real
+      <div className="hero-stage" ref={stage}>
+        <div className="hero-orbit depth" style={depth(-10, 2)} aria-hidden="true" />
+
+        <figure className="hero-arch depth" style={depth(12)} data-mask data-parallax="3">
+          <img
+            src="/editorial/family-v11.webp"
+            alt="Aceites, jabones y cuidado corporal BRAIMARÚ entre orquídeas"
+            width="850"
+            height="638"
+            fetchPriority="high"
+          />
+          <figcaption>
+            <span>01</span>
+            Universo BRAIMARÚ
+          </figcaption>
+        </figure>
+
+        {featuredChip ? (
+          <button
+            type="button"
+            className="hero-chip depth"
+            style={depth(-26, -2)}
+            onClick={() => open(featuredChip)}
+            aria-label={`Ver ${featuredChip.name}`}
+          >
+            <span className="hero-chip-media">
+              <img src="/products/catalog/balsamo-labial.webp" alt="" width="720" height="900" loading="lazy" />
+            </span>
+            <span className="hero-chip-copy">
+              <small>Favorito</small>
+              {featuredChip.name}
+              <ArrowIcon />
+            </span>
+          </button>
+        ) : null}
+
+        <p className="hero-note depth" style={depth(22)} aria-hidden="true">
+          Hecho con intención.<br />Pensado para repetir.
+        </p>
       </div>
     </section>
   );

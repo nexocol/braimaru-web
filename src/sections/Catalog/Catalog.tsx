@@ -1,17 +1,18 @@
-import { useMemo, useState } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { ArrowIcon } from '../../components/ArrowIcon/ArrowIcon';
 import { ProductCard } from '../../components/ProductCard/ProductCard';
-import type { Product, ProductCategory } from '../../types/catalog';
-
-type CatalogFilter = 'all' | ProductCategory;
+import { onCatalogFilter, type CatalogFilter } from '../../lib/catalogBus';
+import { useScrollScenes } from '../../lib/motion';
+import { buildWhatsAppUrl } from '../../lib/whatsapp';
+import type { Product } from '../../types/catalog';
 
 const filters: Array<{ id: CatalogFilter; label: string }> = [
   { id: 'all', label: 'Todos' },
-  { id: 'aceites-corporales', label: 'Aceites corporales' },
-  { id: 'cuidado-capilar', label: 'Cuidado capilar' },
+  { id: 'aceites-corporales', label: 'Aceites' },
+  { id: 'cuidado-capilar', label: 'Cabello' },
   { id: 'jabones', label: 'Jabones' },
-  { id: 'cremas-corporales', label: 'Cremas corporales' },
-  { id: 'cuidado-labial', label: 'Cuidado labial' },
+  { id: 'cremas-corporales', label: 'Cremas' },
+  { id: 'cuidado-labial', label: 'Labios' },
 ];
 
 interface CatalogProps {
@@ -19,49 +20,90 @@ interface CatalogProps {
   phone?: string | null;
 }
 
-export function Catalog({ products, phone = null }: CatalogProps) {
-  const [activeFilter, setActiveFilter] = useState<CatalogFilter>('all');
+/** Where the advice tile sits in the grid when it is shown (keeps the rhythm of 4/3/2 columns). */
+const ADVICE_POSITION = 6;
 
-  const visibleProducts = useMemo(
-    () =>
-      products
-        .filter((product) => product.active)
-        .filter((product) => activeFilter === 'all' || product.category === activeFilter)
-        .sort((a, b) => a.sortOrder - b.sortOrder),
-    [activeFilter, products],
+export function Catalog({ products, phone = null }: CatalogProps) {
+  const root = useRef<HTMLElement>(null);
+  const [activeFilter, setActiveFilter] = useState<CatalogFilter>('all');
+  useScrollScenes(root);
+
+  useEffect(() => onCatalogFilter(setActiveFilter), []);
+
+  const activeProducts = useMemo(
+    () => products.filter((product) => product.active).sort((a, b) => a.sortOrder - b.sortOrder),
+    [products],
   );
 
+  const visibleProducts = useMemo(
+    () => activeProducts.filter((product) => activeFilter === 'all' || product.category === activeFilter),
+    [activeFilter, activeProducts],
+  );
+
+  const countFor = (filter: CatalogFilter) =>
+    filter === 'all' ? activeProducts.length : activeProducts.filter((product) => product.category === filter).length;
+
+  const showAdvice = visibleProducts.length >= ADVICE_POSITION;
+
   return (
-    <section className="catalog section-shell" aria-labelledby="catalog-title">
-      <div className="section-heading catalog-heading">
+    <section id="catalogo" className="catalog section-shell" aria-labelledby="catalog-title" ref={root}>
+      <div className="section-head">
         <div>
-          <p className="eyebrow">Catálogo</p>
-          <h2 id="catalog-title">Elige tu próximo ritual.</h2>
+          <p className="eyebrow" data-fade>Catálogo</p>
+          <h2 id="catalog-title" data-lines aria-label="Todo BRAIMARÚ, en un solo lugar.">Todo BRAIMARÚ,<br />en un solo lugar.</h2>
         </div>
-        <p>Explora la selección disponible y consulta cada producto directamente por WhatsApp.</p>
+        <p data-fade data-delay="0.1">
+          Abre el producto que te interese y continúa la conversación por WhatsApp. Precios y disponibilidad se confirman por ahí.
+        </p>
       </div>
 
-      <div className="catalog-filters" aria-label="Filtrar catálogo">
-        {filters.map((filter) => (
-          <button
-            key={filter.id}
-            type="button"
-            className={activeFilter === filter.id ? 'is-active' : undefined}
-            aria-pressed={activeFilter === filter.id}
-            onClick={() => setActiveFilter(filter.id)}
-          >
-            {filter.label}
-          </button>
-        ))}
+      <div className="catalog-toolbar">
+        <div className="catalog-filters" role="group" aria-label="Filtrar catálogo">
+          {filters.map((filter) => {
+            const count = countFor(filter.id);
+            if (filter.id !== 'all' && count === 0) return null;
+            return (
+              <button
+                key={filter.id}
+                type="button"
+                className={activeFilter === filter.id ? 'is-active' : undefined}
+                aria-pressed={activeFilter === filter.id}
+                onClick={() => setActiveFilter(filter.id)}
+              >
+                <span>{filter.label}</span>
+                <small>{String(count).padStart(2, '0')}</small>
+              </button>
+            );
+          })}
+        </div>
+        <span className="catalog-result-count" aria-live="polite">
+          {visibleProducts.length} {visibleProducts.length === 1 ? 'producto' : 'productos'}
+        </span>
       </div>
 
-      <motion.div className="catalog-grid" layout>
-        <AnimatePresence mode="popLayout">
-          {visibleProducts.map((product) => (
-            <ProductCard key={product.id} product={product} phone={phone} />
-          ))}
-        </AnimatePresence>
-      </motion.div>
+      <div className="catalog-grid">
+          {visibleProducts.flatMap((product, index) => {
+            const card = <ProductCard key={product.id} product={product} index={index % 8} />;
+            if (showAdvice && index === ADVICE_POSITION) {
+              return [
+                <aside key="advice" className="catalog-advice">
+                  <p className="eyebrow">¿No sabes cuál elegir?</p>
+                  <h3>Cuéntanos qué buscas y te orientamos.</h3>
+                  <a
+                    className="button light"
+                    href={buildWhatsAppUrl({ phone, message: 'Hola, quiero que me ayuden a elegir un producto de BRAIMARÚ.' })}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Escribir por WhatsApp <ArrowIcon />
+                  </a>
+                </aside>,
+                card,
+              ];
+            }
+            return [card];
+          })}
+      </div>
     </section>
   );
 }

@@ -1,57 +1,72 @@
-import { motion } from 'motion/react';
+import { useRef, type CSSProperties } from 'react';
+import { ArrowIcon } from '../../components/ArrowIcon/ArrowIcon';
+import { requestCatalogFilter } from '../../lib/catalogBus';
+import { useMagnetic, usePointerDepth, useScrollScenes } from '../../lib/motion';
+
+const depth = (value: number, tilt = 0) => ({ '--depth': value, '--tilt': tilt }) as CSSProperties;
+
+// Experience cues only: avoid publishing formula claims until the client confirms them.
+const experienceNotes = ['Ritual corporal', 'Masaje', 'Cuidado diario', 'Pausa sensorial'];
 
 export function EditorialMoment() {
+  const root = useRef<HTMLElement>(null);
+  useScrollScenes(root);
+  usePointerDepth(root);
+  useMagnetic(root);
+
   return (
-    <section id="editorial" className="editorial-section">
-      <div className="editorial-visuals">
-        <motion.div
-          className="editorial-image"
-          initial={{ clipPath: 'inset(8% 0 8% 0)', opacity: 0.8 }}
-          whileInView={{ clipPath: 'inset(0% 0 0% 0)', opacity: 1 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.85 }}
-        >
-          <img
-            src="/editorial/hair-line-v11.webp"
-            alt="Línea capilar BRAIMARÚ con shampoo, acondicionador y termoprotector"
-            loading="lazy"
-            width="600"
-            height="711"
-          />
-        </motion.div>
+    <section id="editorial" className="campaign" ref={root}>
+      <div className="campaign-inner">
+        <div className="campaign-copy">
+          <p className="eyebrow" data-fade>Cuidado consciente</p>
+          <h2 data-lines aria-label="Tu rutina puede sentirse mucho mejor.">Tu rutina puede sentirse <em>mucho mejor.</em></h2>
+          <p className="campaign-lede" data-fade data-delay="0.1">
+            Una textura agradable, un aroma cálido y unos minutos para ti. El cuidado no tiene que ser complicado para sentirse especial.
+          </p>
+          <ul className="campaign-notes" aria-label="Claves del ritual corporal" data-stagger>
+            {experienceNotes.map((note) => <li key={note}>{note}</li>)}
+          </ul>
+          <a
+            className="button light"
+            href="#catalogo"
+            onClick={() => requestCatalogFilter('aceites-corporales')}
+            data-magnetic
+            data-fade
+            data-delay="0.2"
+          >
+            Ver aceites corporales <ArrowIcon />
+          </a>
+        </div>
 
-        <motion.figure
-          className="editorial-detail"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.7, delay: 0.12 }}
-        >
-          <img
-            src="/products/catalog/balsamo-labial.webp"
-            alt="Bálsamo labial BRAIMARÚ"
-            loading="lazy"
-            width="700"
-            height="900"
-          />
-          <figcaption>Cuidado que se siente cercano, desde el primer gesto.</figcaption>
-        </motion.figure>
+        <div className="campaign-stage">
+          <svg className="campaign-badge depth" style={depth(-16, 4)} viewBox="0 0 120 120" aria-hidden="true">
+            <defs>
+              <path id="badge-circle" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0" />
+            </defs>
+            <text>
+              <textPath href="#badge-circle" startOffset="0" textLength="272" lengthAdjust="spacing">
+                BELLEZA NATURAL · BIENESTAR REAL ·
+              </textPath>
+            </text>
+          </svg>
+
+          <figure className="campaign-photo depth" style={depth(14, -1.5)} data-mask data-parallax="4">
+            <img
+              src="/products/catalog/aceite-naranja-calendula.webp"
+              alt="Aceite corporal Caléndula y Naranja BRAIMARÚ aplicado sobre la piel"
+              width="720"
+              height="900"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+
+          <p className="campaign-tag depth" style={depth(28)} aria-hidden="true">
+            <span>Ritual corporal</span>
+            Caléndula + Naranja
+          </p>
+        </div>
       </div>
-
-      <motion.div
-        className="editorial-copy"
-        initial={{ opacity: 0, x: 30 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true }}
-      >
-        <p className="eyebrow">Cuidado consciente</p>
-        <h2>Natural no tiene que sentirse simple.</h2>
-        <p>
-          Del cuerpo al cabello, BRAIMARÚ convierte el cuidado cotidiano en una experiencia cálida,
-          sensorial y propia.
-        </p>
-        <span className="editorial-index">Cuerpo · cabello · labios / BRAIMARÚ</span>
-      </motion.div>
     </section>
   );
 }

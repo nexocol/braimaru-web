@@ -1,97 +1,110 @@
-import { useEffect, useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { motion } from 'motion/react';
+import { artStyle } from '../../data/artDirection';
 import { formatCopPrice } from '../../lib/format/price';
-import { buildWhatsAppUrl } from '../../lib/whatsapp';
 import type { Product } from '../../types/catalog';
 import { ArrowIcon } from '../ArrowIcon/ArrowIcon';
+import { useQuickView } from '../ProductQuickView/quickViewContext';
 
-type ProductCardVariant = 'default' | 'editorial' | 'compact';
+type ProductCardVariant = 'default' | 'lead' | 'row';
 
 interface ProductCardProps {
   product: Product;
-  phone?: string | null;
-  priority?: boolean;
   variant?: ProductCardVariant;
+  priority?: boolean;
+  /** position in the grid, used for the staggered entrance */
+  index?: number;
+  animated?: boolean;
 }
 
-const CONTAINED_ARTWORK_PRODUCTS = new Set([
-  'jabon-avena-miel',
-  'jabon-manzana-verde',
-]);
+const CATEGORY_LABEL: Record<Product['category'], string> = {
+  'aceites-corporales': 'Aceite corporal',
+  'cuidado-capilar': 'Cuidado capilar',
+  jabones: 'Jabón',
+  'cremas-corporales': 'Crema',
+  'cuidado-labial': 'Labios',
+};
 
-export function ProductCard({
-  product,
-  phone = null,
-  priority = false,
-  variant = 'default',
-}: ProductCardProps) {
-  const formattedPrice = formatCopPrice(product.priceCop);
-  const displayDescription = product.id === 'shampoo-capilar'
-    ? 'Shampoo capilar BRAIMARÚ.'
-    : product.id === 'acondicionador-capilar'
-      ? 'Acondicionador capilar BRAIMARÚ.'
-      : product.shortDescription;
-  const [imageFailed, setImageFailed] = useState(false);
-  const containedArtwork = CONTAINED_ARTWORK_PRODUCTS.has(product.id);
-  const needsCanelaArtworkCleanup = product.id === 'aceite-corporal-canela';
+function getDisplayDescription(product: Product) {
+  if (product.id === 'shampoo-capilar') return 'Shampoo capilar BRAIMARÚ.';
+  if (product.id === 'acondicionador-capilar') return 'Acondicionador capilar BRAIMARÚ.';
+  return product.shortDescription;
+}
 
-  useEffect(() => {
-    setImageFailed(false);
-  }, [product.image]);
+export function ProductCard({ product, variant = 'default', priority = false, index = 0, animated = true }: ProductCardProps) {
+  const { open } = useQuickView();
+  const [failedImage, setFailedImage] = useState<string | null>(null);
+  const imageFailed = failedImage === product.image;
+  const price = formatCopPrice(product.priceCop);
+  const hasImage = Boolean(product.image) && !imageFailed;
+  const contained = hasImage && artStyle(product.image)['--ad-fit'] === 'contain';
 
-  return (
-    <motion.article
-      className={`product-card product-card--${variant}`}
-      data-product-id={product.id}
-      initial={{ opacity: 0, y: 22 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.55 }}
-      layout
-    >
+  const body = (
+    <>
       <div
-        className={`product-media${containedArtwork ? ' product-media--contain' : ''}${needsCanelaArtworkCleanup ? ' product-media--canela' : ''}`}
+        className={`product-media${contained ? ' product-media--contain' : ''}`}
+        style={hasImage ? artStyle(product.image) : undefined}
       >
-        {product.image && !imageFailed ? (
+        {hasImage ? (
           <img
-            src={product.image}
+            src={product.image ?? undefined}
             alt={product.imageAlt}
             loading={priority ? 'eager' : 'lazy'}
+            decoding="async"
             width="780"
-            height="900"
-            onError={() => setImageFailed(true)}
+            height="975"
+            onError={() => setFailedImage(product.image)}
           />
         ) : (
           <div className="product-media-brand" role="img" aria-label={`BRAIMARÚ — ${product.name}`}>
-            <span className="product-media-monogram">BM</span>
-            <small>BRAIMARÚ</small>
+            <img src="/brand/braimaru-logo-premium.png" alt="" aria-hidden="true" />
           </div>
         )}
+        <span className="product-media-action" aria-hidden="true">Ver detalle</span>
       </div>
 
       <div className="product-meta">
-        <p className="eyebrow">{product.category.replaceAll('-', ' ')}</p>
-        <h3>{product.name}</h3>
-        <p>{displayDescription}</p>
+        <p className="eyebrow">{CATEGORY_LABEL[product.category]}</p>
+        <h3>
+          <button className="product-open" type="button" onClick={() => open(product)}>
+            {product.name}
+            <span className="sr-only">: ver detalle</span>
+          </button>
+        </h3>
 
-        {product.benefits.length > 0 ? (
+        {variant === 'lead' ? <p className="product-description">{getDisplayDescription(product)}</p> : null}
+
+        {variant === 'lead' && product.benefits.length > 0 ? (
           <ul className="product-benefits" aria-label={`Beneficios de ${product.name}`}>
             {product.benefits.slice(0, 3).map((benefit) => <li key={benefit}>{benefit}</li>)}
           </ul>
         ) : null}
 
-        <div className="product-actions">
-          <span className="price-pending">{formattedPrice ?? 'Consultar precio'}</span>
-          <a
-            className="text-link"
-            href={buildWhatsAppUrl({ phone, productName: product.name })}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Pedir por WhatsApp <ArrowIcon />
-          </a>
-        </div>
+        <span className="product-cta">
+          {price ?? 'Ver detalle'} <ArrowIcon />
+        </span>
       </div>
+    </>
+  );
+
+  const className = `product-card product-card--${variant}`;
+
+  if (!animated) {
+    return <article className={className} data-product-id={product.id}>{body}</article>;
+  }
+
+  return (
+    <motion.article
+      className={className}
+      data-product-id={product.id}
+      style={{ '--i': index } as CSSProperties}
+      initial={{ opacity: 0, y: 22 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.12 }}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+      layout="position"
+    >
+      {body}
     </motion.article>
   );
 }

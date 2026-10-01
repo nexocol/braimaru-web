@@ -1,26 +1,47 @@
 :root {
-  --ivory: #f6efe7;
-  --shell: #efe0d1;
-  --sand: #e6d3c0;
-  --peach: #e2c4a0;
-  --taupe: #9c825c;
-  --ink: #261e19;
-  --ink-soft: #5c4d43;
-  --botanical: #6f6f55;
-  --accent: #c18b48;
-  --line: rgba(38, 30, 25, 0.16);
+  --ivory: #f5efe7;
+  --paper: #faf6f0;
+  --shell: #eadbcd;
+  --blush: #efe2d5;
+  --sand: #decab8;
+  --peach: #d9b993;
+  --taupe: #9b7f5a;
+  --taupe-text: #766040; /* taupe for small text: ~5:1 on ivory */
+  --ink: #211915;
+  --ink-soft: #59493f;
+  --cocoa: #2b1d16;
+  --cocoa-soft: #3b2a20;
+  --botanical: #6f705a;
+  --accent: #b88750;
+  --line: rgba(33, 25, 21, 0.14);
+  --line-light: rgba(255, 250, 245, 0.2);
 
-  --container: 90rem;
-  --space-page: clamp(1.5rem, 5vw, 6rem);
-  --space-section: 9rem;
+  --container: 86rem;
+  --space-page: clamp(1.25rem, 4vw, 4.5rem);
+  --space-section: clamp(3.75rem, 6.2vw, 6.5rem);
+  --header-h: 5.75rem;
 
+  --radius-xs: 0.5rem;
+  --radius-sm: 0.9rem;
+  --radius-panel: 1.5rem;
   --radius-pill: 999px;
-  --radius-panel: 1.2rem;
+  /* the one organic corner language used across cards, panels and stages */
+  --radius-organic: 2.6rem 0.9rem 2.6rem 0.9rem;
 
-  --duration-fast: 220ms;
-  --duration-base: 300ms;
-  --duration-slow: 700ms;
+  --shadow-soft: 0 24px 70px rgba(49, 31, 20, 0.1);
+  --shadow-lift: 0 30px 80px rgba(42, 27, 18, 0.16);
+
+  --duration-fast: 180ms;
+  --duration-base: 320ms;
+  --duration-slow: 720ms;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 
   --z-nav: 50;
+  --z-modal: 100;
+}
+
+@media (max-width: 820px) {
+  :root {
+    --header-h: 4.25rem;
+  }
 }
