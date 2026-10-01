@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import type { Product, RitualTag } from '../../types/catalog';
 
@@ -56,11 +56,23 @@ interface RitualExplorerProps {
 
 export function RitualExplorer({ products }: RitualExplorerProps) {
   const [active, setActive] = useState<RitualTag>('cuidado-corporal');
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const activeTabRef = useRef<HTMLButtonElement>(null);
   const current = rituals.find((ritual) => ritual.id === active) ?? rituals[0];
   const matched = useMemo(
     () => products.filter((product) => product.ritualTags.includes(active)).slice(0, 3),
     [active, products],
   );
+
+  useEffect(() => {
+    const tabs = tabsRef.current;
+    const selectedTab = activeTabRef.current;
+
+    if (!tabs || !selectedTab || tabs.scrollWidth <= tabs.clientWidth) return;
+
+    const centeredLeft = selectedTab.offsetLeft - (tabs.clientWidth - selectedTab.offsetWidth) / 2;
+    tabs.scrollTo({ left: Math.max(0, centeredLeft), behavior: 'smooth' });
+  }, [active]);
 
   return (
     <section id="ritual" className="ritual section-shell">
@@ -75,10 +87,11 @@ export function RitualExplorer({ products }: RitualExplorerProps) {
         </p>
       </div>
 
-      <div className="ritual-tabs" role="tablist" aria-label="Necesidad de cuidado">
+      <div ref={tabsRef} className="ritual-tabs" role="tablist" aria-label="Necesidad de cuidado">
         {rituals.map((ritual) => (
           <button
             key={ritual.id}
+            ref={active === ritual.id ? activeTabRef : undefined}
             type="button"
             role="tab"
             aria-selected={active === ritual.id}

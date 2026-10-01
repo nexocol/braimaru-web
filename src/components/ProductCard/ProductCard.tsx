@@ -33,6 +33,7 @@ export function ProductCard({
       : product.shortDescription;
   const [imageFailed, setImageFailed] = useState(false);
   const containedArtwork = CONTAINED_ARTWORK_PRODUCTS.has(product.id);
+  const needsCanelaArtworkCleanup = product.id === 'aceite-corporal-canela';
 
   useEffect(() => {
     setImageFailed(false);
@@ -48,7 +49,9 @@ export function ProductCard({
       transition={{ duration: 0.55 }}
       layout
     >
-      <div className={`product-media${containedArtwork ? ' product-media--contain' : ''}`}>
+      <div
+        className={`product-media${containedArtwork ? ' product-media--contain' : ''}${needsCanelaArtworkCleanup ? ' product-media--canela' : ''}`}
+      >
         {product.image && !imageFailed ? (
           <img
             src={product.image}

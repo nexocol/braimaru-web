@@ -1,3 +1,9 @@
+@media (max-width: 1280px) {
+  .hero-campaign-caption {
+    display: none;
+  }
+}
+
 @media (max-width: 900px) {
   .site-header {
     top: 0.6rem;
