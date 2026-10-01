@@ -54,7 +54,7 @@
   top: 50%;
   left: 53%;
   z-index: 1;
-  width: min(45vw, 43rem);
+  width: min(47vw, 45rem);
   aspect-ratio: 1;
   transform: translate(-50%, -48%);
 }
@@ -72,31 +72,24 @@
   top: 50%;
   left: 50%;
   z-index: 2;
-  width: 63%;
-  aspect-ratio: 0.92;
+  width: 68%;
+  aspect-ratio: 0.8;
   overflow: hidden;
   transform: translate(-50%, -50%);
-  border-radius: 50% 50% 43% 45%;
-  background: var(--shell);
-  box-shadow: 0 32px 80px rgba(77, 50, 27, 0.16);
+  border-radius: 42% 58% 48% 52% / 48% 44% 56% 52%;
+  background: transparent;
+  box-shadow: 0 32px 80px rgba(77, 50, 27, 0.10);
 }
 
 .hero-visual-main {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  transform: scale(1.02);
+  padding: 0;
+  object-fit: contain;
+  object-position: center;
+  background: transparent;
 }
 
-.hero-logo-stamp {
-  position: absolute;
-  bottom: 5%;
-  left: -7%;
-  z-index: 3;
-  width: 40%;
-  opacity: 0.9;
-  mix-blend-mode: multiply;
-}
 
 .hero-product-note {
   position: absolute;
@@ -161,13 +154,32 @@
 
 .manifesto {
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
-  gap: 2rem;
+  grid-template-columns: minmax(14rem, 0.7fr) minmax(0, 2fr);
+  gap: clamp(2rem, 5vw, 6rem);
   align-items: end;
 }
 
+.manifesto-visual {
+  align-self: stretch;
+  min-height: 22rem;
+  overflow: hidden;
+  background: #fff;
+}
+
+.manifesto-visual img {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  object-fit: contain;
+  object-position: center;
+  background: #fff;
+}
+
+.manifesto-content {
+  min-width: 0;
+}
+
 .manifesto h2 {
-  grid-column: 2 / 4;
   margin: 0;
   font-size: clamp(4rem, 8vw, 9rem);
   letter-spacing: -0.04em;
@@ -179,9 +191,8 @@
 }
 
 .manifesto-copy {
-  grid-column: 2;
   max-width: 32rem;
-  margin: 2rem 0 0;
+  margin: 2rem 0 0 auto;
   color: var(--ink-soft);
   line-height: 1.7;
 }
@@ -247,7 +258,10 @@
 .editorial-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  padding: 2%;
+  object-fit: contain;
+  object-position: center;
+  background: #fff;
   filter: saturate(0.86) contrast(0.97);
 }
 
@@ -266,7 +280,9 @@
 .editorial-detail img {
   width: 100%;
   aspect-ratio: 1.18;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
+  background: #fff;
 }
 
 .editorial-detail figcaption {
@@ -354,7 +370,10 @@
 .ritual-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  padding: clamp(0.8rem, 2.8vw, 2rem);
+  object-fit: contain;
+  object-position: center;
+  background: #fff;
 }
 
 .ritual-content {

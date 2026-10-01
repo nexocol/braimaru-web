@@ -1,0 +1,77 @@
+name: BRAIMARÚ Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  preview:
+    if: github.event.action != 'closed' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - id: preview
+        name: Create or update Cloudflare Preview
+        run: |
+          set -o pipefail
+          npx wrangler preview --config dist/braimaru_web/wrangler.json --name "pr-${{ github.event.pull_request.number }}" --json
+          preview_url="https://pr-${{ github.event.pull_request.number }}-braimaru-web.nexocolmj.workers.dev"
+          echo "preview_url=$preview_url" >> "$GITHUB_OUTPUT"
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: 167fa653e9614e2690ea37f583567dea
+
+      - name: Probe Preview
+        run: curl --fail --show-error --silent "${{ steps.preview.outputs.preview_url }}/api/health"
+
+      - name: Probe visual assets
+        run: |
+          set -e
+          base="${{ steps.preview.outputs.preview_url }}"
+          for path in \
+            /brand/braimaru-logo.webp \
+            /products/aceite-corporal-01.webp \
+            /products/shampoo-capilar-v11.webp \
+            /products/acondicionador-capilar-v11.webp \
+            /editorial/exfoliante-cafe-v11.webp \
+            /products/catalog/jabon-maracuya.webp \
+            /products/catalog/jabon-exfoliante-cafe.webp \
+            /products/catalog/aceite-cafe-naranja.webp; do
+            echo "Checking $path"
+            curl --fail --show-error --silent --head "$base$path" | grep -Ei "^HTTP/|^content-type:|^content-length:"
+          done
+      - name: Comment Preview URL
+        run: |
+          gh pr comment "${{ github.event.pull_request.number }}" \
+            --edit-last --create-if-none \
+            --body "### BRAIMARÚ Preview\n\nPreview: ${{ steps.preview.outputs.preview_url }}\n\nThis URL updates automatically on every push to this PR."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  cleanup:
+    if: github.event.action == 'closed' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Delete Cloudflare Preview
+        run: npx wrangler preview delete --name "pr-${{ github.event.pull_request.number }}" --skip-confirmation
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: 167fa653e9614e2690ea37f583567dea

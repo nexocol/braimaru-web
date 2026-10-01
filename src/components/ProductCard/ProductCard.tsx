@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'motion/react';
 import { formatCopPrice } from '../../lib/format/price';
 import { buildWhatsAppUrl } from '../../lib/whatsapp';
@@ -19,25 +20,29 @@ export function ProductCard({
   priority = false,
   variant = 'default',
 }: ProductCardProps) {
+  const [imageFailed, setImageFailed] = useState(false);
   const formattedPrice = formatCopPrice(product.priceCop);
 
   return (
     <motion.article
       className={`product-card product-card--${variant}`}
-      initial={{ opacity: 0, y: 22 }}
+      initial={{ opacity: 1, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.55 }}
       layout
     >
       <div className="product-media">
-        {product.image ? (
+        {product.image && !imageFailed ? (
           <img
             src={product.image}
             alt={product.imageAlt}
-            loading={priority ? 'eager' : 'lazy'}
+            loading="eager"
             width="780"
             height="900"
+            decoding="async"
+            fetchPriority={priority ? "high" : "auto"}
+            onError={() => setImageFailed(true)}
           />
         ) : (
           <div className="product-media-brand" aria-hidden="true">

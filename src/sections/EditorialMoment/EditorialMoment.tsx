@@ -4,29 +4,17 @@ export function EditorialMoment() {
   return (
     <section id="historia" className="editorial-section">
       <div className="editorial-visuals">
-        <motion.div
-          className="editorial-image"
-          initial={{ clipPath: 'inset(8% 0 8% 0)', opacity: 0.8 }}
-          whileInView={{ clipPath: 'inset(0% 0 0% 0)', opacity: 1 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.85 }}
-        >
+        <div className="editorial-image">
           <img
             src="/editorial/hair-line-v11.webp"
             alt="Línea capilar BRAIMARÚ con shampoo, acondicionador y termoprotector"
-            loading="lazy"
+            loading="eager"
             width="600"
             height="711"
           />
-        </motion.div>
+        </div>
 
-        <motion.figure
-          className="editorial-detail"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.7, delay: 0.12 }}
-        >
+        <figure className="editorial-detail">
           <img
             src="/editorial/exfoliante-cafe-v11.webp"
             alt="Detalle de la línea exfoliante de café BRAIMARÚ"
@@ -35,7 +23,7 @@ export function EditorialMoment() {
             height="629"
           />
           <figcaption>Texturas para convertir la rutina en una pausa.</figcaption>
-        </motion.figure>
+        </figure>
       </div>
 
       <motion.div

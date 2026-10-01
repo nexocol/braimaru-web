@@ -30,7 +30,7 @@ export function Hero({ phone = null }: HeroProps) {
       gsap.from('.hero-visual-mask', {
         scale: 0.96,
         clipPath: 'inset(12% 10% 10% 10% round 48% 48% 42% 44%)',
-        opacity: 0,
+        opacity: 1,
         duration: 1.25,
         ease: 'power3.out',
       });
@@ -54,16 +54,6 @@ export function Hero({ phone = null }: HeroProps) {
         },
       });
 
-      gsap.to('.hero-logo-stamp', {
-        yPercent: -10,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: root.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.7,
-        },
-      });
     }, root);
 
     return () => context.revert();
@@ -86,21 +76,14 @@ export function Hero({ phone = null }: HeroProps) {
         <div className="hero-visual-mask">
           <img
             className="hero-visual-main"
-            src="/products/aceite-corporal-01.webp"
+            src="/products/shampoo-capilar-v11.webp"
             alt=""
-            width="780"
-            height="900"
+            width="520"
+            height="650"
             fetchPriority="high"
           />
         </div>
-        <img
-          className="hero-logo-stamp"
-          src="/brand/braimaru-logo.webp"
-          alt=""
-          width="420"
-          height="300"
-        />
-        <span className="hero-product-note">Canela · Clavos de olor</span>
+        <span className="hero-product-note">Shampoo capilar</span>
       </div>
 
       <div className="hero-copy" data-hero-reveal>
