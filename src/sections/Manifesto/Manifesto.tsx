@@ -7,10 +7,10 @@ export function Manifesto() {
         <motion.img
           src="/editorial/exfoliante-cafe-v11.webp"
           alt=""
-          loading="lazy"
+          loading="eager"
           width="700"
           height="629"
-          initial={{ opacity: 0, scale: 1.04 }}
+          initial={{ opacity: 1, scale: 1.02 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, amount: 0.25 }}
           transition={{ duration: 0.8 }}
