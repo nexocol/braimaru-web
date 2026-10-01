@@ -1,7 +1,8 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { FloatingWhatsApp } from '../components/FloatingWhatsApp/FloatingWhatsApp';
 import { Header } from '../components/Header/Header';
 import { PointerAura } from '../components/PointerAura/PointerAura';
+import { StorefrontIntro } from '../components/StorefrontIntro/StorefrontIntro';
 import { QuickViewProvider } from '../components/ProductQuickView/QuickViewProvider';
 import { useStorefrontData } from '../hooks/useStorefrontData';
 import { Footer } from '../layout/Footer/Footer';
@@ -31,6 +32,7 @@ function AdminFallback() {
 
 function StorefrontApp() {
   const storefront = useStorefrontData();
+  const [introDone, setIntroDone] = useState(false);
   const site = {
     ...storefront.site,
     whatsapp_phone: storefront.site.whatsapp_phone ?? BRAIMARU_WHATSAPP_PHONE,
@@ -45,15 +47,14 @@ function StorefrontApp() {
     return () => window.removeEventListener('load', refresh);
   }, []);
 
+  const ready = !storefront.loading;
+  const revealClassName = `storefront-reveal${introDone ? ' is-visible' : ''}`;
+
   if (storefront.loading) {
     return (
       <>
-        <Header phone={phone} />
-        <main className="storefront-state" aria-live="polite">
-          <p className="eyebrow">BRAIMARÚ</p>
-          <h1>Preparando tu ritual.</h1>
-        </main>
-        <Footer site={site} />
+        <StorefrontIntro ready={false} onComplete={() => setIntroDone(true)} />
+        <main className="storefront-underlay" aria-hidden="true" />
       </>
     );
   }
@@ -61,37 +62,45 @@ function StorefrontApp() {
   if (storefront.error) {
     return (
       <>
-        <Header phone={phone} />
-        <main className="storefront-state" role="alert">
-          <p className="eyebrow">BRAIMARÚ</p>
-          <h1>Volvamos a intentarlo en un momento.</h1>
-          <p>{storefront.error}</p>
-        </main>
-        <Footer site={site} />
+        <StorefrontIntro ready={ready} onComplete={() => setIntroDone(true)} />
+        <div className={revealClassName}>
+          <Header phone={phone} />
+          <main className="storefront-state" role="alert">
+            <p className="eyebrow">BRAIMARÚ</p>
+            <h1>Volvamos a intentarlo en un momento.</h1>
+            <p>{storefront.error}</p>
+          </main>
+          <Footer site={site} />
+        </div>
       </>
     );
   }
 
   return (
-    <QuickViewProvider phone={phone}>
-      <div data-catalog-source={storefront.source ?? undefined}>
-        <PointerAura />
-        <Header phone={phone} />
-        <FloatingWhatsApp phone={phone} />
-        <main>
-          <Hero phone={phone} products={storefront.products} />
-          <Manifesto />
-          <CategoryShowcase products={storefront.products} />
-          <FeaturedProducts products={storefront.products} />
-          <EditorialMoment />
-          <RitualExplorer products={storefront.products} phone={phone} />
-          <BrandStory />
-          <Catalog products={storefront.products} phone={phone} />
-          <ClosingCTA phone={phone} />
-        </main>
-        <Footer site={site} />
+    <>
+      <StorefrontIntro ready={ready} onComplete={() => setIntroDone(true)} />
+      <div className={revealClassName}>
+        <QuickViewProvider phone={phone}>
+          <div data-catalog-source={storefront.source ?? undefined}>
+            <PointerAura />
+            <Header phone={phone} />
+            <FloatingWhatsApp phone={phone} />
+            <main>
+              <Hero phone={phone} products={storefront.products} />
+              <Manifesto />
+              <CategoryShowcase products={storefront.products} />
+              <FeaturedProducts products={storefront.products} />
+              <EditorialMoment />
+              <RitualExplorer products={storefront.products} phone={phone} />
+              <BrandStory />
+              <Catalog products={storefront.products} phone={phone} />
+              <ClosingCTA phone={phone} />
+            </main>
+            <Footer site={site} />
+          </div>
+        </QuickViewProvider>
       </div>
-    </QuickViewProvider>
+    </>
   );
 }
 
