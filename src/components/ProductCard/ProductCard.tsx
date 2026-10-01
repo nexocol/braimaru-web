@@ -26,7 +26,7 @@ export function ProductCard({
   return (
     <motion.article
       className={`product-card product-card--${variant}`}
-      initial={{ opacity: 0, y: 22 }}
+      initial={{ opacity: 1, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.55 }}
@@ -37,9 +37,10 @@ export function ProductCard({
           <img
             src={product.image}
             alt={product.imageAlt}
-            loading={priority ? 'eager' : 'lazy'}
+            loading="eager"
             width="780"
             height="900"
+            decoding="async"
             onError={() => setImageFailed(true)}
           />
         ) : (
