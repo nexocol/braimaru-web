@@ -54,16 +54,6 @@ export function Hero({ phone = null }: HeroProps) {
         },
       });
 
-      gsap.to('.hero-logo-stamp', {
-        yPercent: -10,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: root.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.7,
-        },
-      });
     }, root);
 
     return () => context.revert();
