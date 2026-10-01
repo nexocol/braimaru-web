@@ -41,6 +41,7 @@ export function ProductCard({
             width="780"
             height="900"
             decoding="async"
+            fetchPriority={priority ? "high" : "auto"}
             onError={() => setImageFailed(true)}
           />
         ) : (
