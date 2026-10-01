@@ -59,4 +59,4 @@ jobs:
         run: npx wrangler preview delete --name "pr-${{ github.event.pull_request.number }}" --skip-confirmation
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_ACCOUNT_ID: 167fa653e9614e2690ea37f583567dea
