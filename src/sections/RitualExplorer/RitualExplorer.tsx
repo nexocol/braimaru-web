@@ -94,12 +94,12 @@ export function RitualExplorer({ products }: RitualExplorerProps) {
           <motion.div
             key={active}
             className="ritual-image"
-            initial={{ opacity: 0, clipPath: 'inset(7% 0 7% 0)', scale: 1.015 }}
+            initial={{ opacity: 1, clipPath: 'inset(4% 0 4% 0)', scale: 1.01 }}
             animate={{ opacity: 1, clipPath: 'inset(0% 0 0% 0)', scale: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <img src={current.image} alt={current.imageAlt} loading="lazy" />
+            <img src={current.image} alt={current.imageAlt} loading="eager" />
           </motion.div>
         </AnimatePresence>
 
