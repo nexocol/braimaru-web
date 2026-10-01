@@ -36,6 +36,24 @@ jobs:
       - name: Probe Preview
         run: curl --fail --show-error --silent "${{ steps.preview.outputs.preview_url }}/api/health"
 
+      - name: Inspect visual asset pixels
+        run: |
+          if ! command -v identify >/dev/null 2>&1; then
+            echo "ImageMagick identify not available; skipping pixel inspection."
+            exit 0
+          fi
+          for path in \
+            public/brand/braimaru-logo.webp \
+            public/products/aceite-corporal-01.webp \
+            public/products/shampoo-capilar-v11.webp \
+            public/products/acondicionador-capilar-v11.webp \
+            public/editorial/exfoliante-cafe-v11.webp \
+            public/products/catalog/jabon-maracuya.webp \
+            public/products/catalog/jabon-exfoliante-cafe.webp \
+            public/products/catalog/aceite-cafe-naranja.webp; do
+            echo "Asset: $path"
+            identify -format "size=%wx%h channels=%[channels] mean=%[mean] stddev=%[standard-deviation]\n" "$path"
+          done
       - name: Probe visual assets
         run: |
           set -e
