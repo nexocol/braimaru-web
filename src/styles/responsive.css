@@ -134,6 +134,15 @@
     grid-template-columns: 1fr;
   }
 
+  .brand-story {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .brand-story-copy {
+    padding-right: 0;
+  }
+
   .editorial-visuals {
     min-height: 68vh;
   }
@@ -299,6 +308,19 @@
   .editorial-copy {
     min-height: 48vh;
     padding: 3rem 1.5rem;
+  }
+
+  .brand-story {
+    width: min(calc(100% - 2rem), var(--container));
+    padding-block: 5rem;
+  }
+
+  .brand-story-visual img {
+    aspect-ratio: 0.98;
+  }
+
+  .brand-story-copy h2 {
+    font-size: clamp(3.4rem, 16vw, 5.2rem);
   }
 
   .ritual-tabs {

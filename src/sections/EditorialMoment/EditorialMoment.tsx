@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 
 export function EditorialMoment() {
   return (
-    <section id="historia" className="editorial-section">
+    <section id="editorial" className="editorial-section">
       <div className="editorial-visuals">
         <motion.div
           className="editorial-image"

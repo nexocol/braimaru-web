@@ -96,7 +96,7 @@ export function Hero({ phone = null }: HeroProps) {
 
         <figure className="hero-campaign-main" data-hero-card>
           <img
-            src="/products/catalog/crema-manos-corporal.webp"
+            src="/editorial/cafe-naranja-campaign.webp"
             alt=""
             width="900"
             height="1180"
@@ -106,7 +106,7 @@ export function Hero({ phone = null }: HeroProps) {
 
         <figure className="hero-campaign-side" data-hero-card>
           <img
-            src="/products/catalog/aceite-naranja-calendula.webp"
+            src="/products/catalog/crema-manos-corporal.webp"
             alt=""
             width="900"
             height="1180"

@@ -15,10 +15,7 @@ interface ProductCardProps {
 }
 
 const CONTAINED_ARTWORK_PRODUCTS = new Set([
-  'jabon-exfoliante-cafe',
-  'jabon-avena-aclarante',
   'jabon-avena-miel',
-  'jabon-canela-clavos',
   'jabon-manzana-verde',
 ]);
 
@@ -29,6 +26,11 @@ export function ProductCard({
   variant = 'default',
 }: ProductCardProps) {
   const formattedPrice = formatCopPrice(product.priceCop);
+  const displayDescription = product.id === 'shampoo-capilar'
+    ? 'Shampoo capilar BRAIMARÚ.'
+    : product.id === 'acondicionador-capilar'
+      ? 'Acondicionador capilar BRAIMARÚ.'
+      : product.shortDescription;
   const [imageFailed, setImageFailed] = useState(false);
   const containedArtwork = CONTAINED_ARTWORK_PRODUCTS.has(product.id);
 
@@ -67,7 +69,7 @@ export function ProductCard({
       <div className="product-meta">
         <p className="eyebrow">{product.category.replaceAll('-', ' ')}</p>
         <h3>{product.name}</h3>
-        <p>{product.shortDescription}</p>
+        <p>{displayDescription}</p>
 
         {product.benefits.length > 0 ? (
           <ul className="product-benefits" aria-label={`Beneficios de ${product.name}`}>

@@ -4,6 +4,7 @@ import { Header } from '../components/Header/Header';
 import { useStorefrontData } from '../hooks/useStorefrontData';
 import { Footer } from '../layout/Footer/Footer';
 import { BRAIMARU_WHATSAPP_PHONE } from '../lib/whatsapp';
+import { BrandStory } from '../sections/BrandStory/BrandStory';
 import { Catalog } from '../sections/Catalog/Catalog';
 import { ClosingCTA } from '../sections/ClosingCTA/ClosingCTA';
 import { EditorialMoment } from '../sections/EditorialMoment/EditorialMoment';
@@ -55,6 +56,7 @@ function StorefrontApp() {
         <Manifesto />
         <FeaturedProducts products={storefront.products} phone={phone} />
         <EditorialMoment />
+        <BrandStory />
         <RitualExplorer products={storefront.products} />
         <Catalog products={storefront.products} phone={phone} />
         <ClosingCTA phone={phone} />
