@@ -603,3 +603,11 @@
     display: none;
   }
 }
+
+.footer-brand-logo {
+  width: 7.6rem;
+  height: 4.2rem;
+  object-fit: contain;
+  object-position: left center;
+  filter: drop-shadow(0 8px 22px rgba(184, 135, 80, 0.14));
+}

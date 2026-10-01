@@ -53,8 +53,8 @@ export function ProductCard({
     />
   ) : (
     <div className="product-media-brand" role="img" aria-label={`BRAIMARÚ — ${product.name}`}>
-      <span className="product-media-monogram">BM</span>
-      <small>BRAIMARÚ</small>
+      <img src="/brand/braimaru-logo-premium.png" alt="" aria-hidden="true" />
+      <small>{product.name}</small>
     </div>
   );
 

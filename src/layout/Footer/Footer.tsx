@@ -13,14 +13,21 @@ export function Footer({ site }: FooterProps) {
   return (
     <footer className="footer">
       <div className="footer-identity">
-        <div className="footer-brand">BRAIMARÚ</div>
+        <img
+          className="footer-brand-logo"
+          src="/brand/braimaru-logo-premium.png"
+          alt="BRAIMARÚ"
+          width="400"
+          height="268"
+        />
         <p>Cosmética natural · Colombia</p>
       </div>
 
       <nav className="footer-nav" aria-label="Navegación del pie de página">
-        <a href="#productos">Productos</a>
+        <a href="#colecciones">Colecciones</a>
         <a href="#ritual">Tu ritual</a>
-        <a href="#historia">Nuestra esencia</a>
+        <a href="#historia">Historia</a>
+        <a href="#catalogo">Catálogo</a>
       </nav>
 
       <div
