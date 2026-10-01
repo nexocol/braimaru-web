@@ -568,18 +568,17 @@
 .pill--tube img { object-position: 50% 34%; }
 
 .manifesto-foot {
-  display: flex;
-  max-width: 62rem;
-  flex-wrap: wrap;
+  display: grid;
+  max-width: 58rem;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem 3rem;
-  margin-top: clamp(1.75rem, 3vw, 2.75rem);
-  padding-top: 1.5rem;
+  gap: 1rem 2.2rem;
+  margin-top: clamp(1.4rem, 2.4vw, 2rem);
+  padding-top: 1.3rem;
   border-top: 1px solid var(--line);
 }
 
-.manifesto-foot p { max-width: 36rem; margin: 0; color: var(--ink-soft); line-height: 1.7; }
+.manifesto-foot p { max-width: 34rem; margin: 0; color: var(--ink-soft); line-height: 1.7; }
 
 /* 5 · section head -------------------------------------------------- */
 
@@ -595,6 +594,7 @@
 .section-head > p { max-width: 27rem; margin: 0; color: var(--ink-soft); line-height: 1.7; justify-self: end; }
 
 @media (max-width: 820px) {
+  .manifesto-foot { grid-template-columns: minmax(0, 1fr); align-items: start; }
   .section-head { grid-template-columns: minmax(0, 1fr); }
   .section-head > p { justify-self: start; }
 }
@@ -903,19 +903,18 @@
 
 .product-card--row {
   display: grid;
-  grid-template-columns: minmax(7.5rem, 0.42fr) minmax(0, 1fr);
+  grid-template-columns: minmax(6.7rem, 0.34fr) minmax(0, 1fr);
   align-items: center;
   gap: clamp(1rem, 2vw, 1.6rem);
-  padding: clamp(0.8rem, 1.4vw, 1.1rem);
-  border: 1px solid var(--line);
-  border-radius: 2.4rem 0.9rem 2.4rem 0.9rem;
-  background: rgba(250, 246, 240, 0.6);
-  transition: background var(--duration-base) ease, border-color var(--duration-base) ease;
+  padding: clamp(0.9rem, 1.5vw, 1.2rem) 0;
+  border-top: 1px solid var(--line);
+  background: transparent;
+  transition: padding-left var(--duration-base) var(--ease), border-color var(--duration-base) ease;
 }
 
-.product-card--row:nth-child(even) { border-radius: 0.9rem 2.4rem 0.9rem 2.4rem; }
-.product-card--row:hover { border-color: rgba(33, 25, 21, 0.3); background: #fff; }
-.product-card--row .product-media { aspect-ratio: 4 / 5; border-radius: 999px 999px 0.9rem 0.9rem; }
+.product-card--row:last-child { border-bottom: 1px solid var(--line); }
+.product-card--row:hover { padding-left: 0.45rem; border-color: rgba(33, 25, 21, 0.28); }
+.product-card--row .product-media { aspect-ratio: 4 / 5; border-radius: 999px 999px 0.8rem 0.8rem; }
 .product-card--row .product-meta { padding: 0; }
 .product-card--row .product-meta h3 { font-size: clamp(1.4rem, 2vw, 1.9rem); }
 .product-card--row .product-media-action { display: none; }
@@ -1444,6 +1443,7 @@
 .closing { padding: 0 var(--space-page) var(--space-section); }
 
 .closing-card {
+  position: relative;
   display: grid;
   width: min(100%, var(--container));
   margin-inline: auto;
@@ -1456,7 +1456,23 @@
     radial-gradient(34rem 20rem at 100% 0%, rgba(184, 135, 80, 0.28), transparent 70%),
     var(--cocoa);
   color: var(--ivory);
+  overflow: hidden;
 }
+
+.closing-card::after {
+  position: absolute;
+  right: clamp(-2rem, 1vw, 1rem);
+  bottom: clamp(-4rem, -2vw, -2rem);
+  width: clamp(13rem, 23vw, 22rem);
+  aspect-ratio: 1.26;
+  content: "";
+  pointer-events: none;
+  background: url("/brand/braimaru-logo-premium.png") center / contain no-repeat;
+  opacity: 0.045;
+  filter: grayscale(1) brightness(2.1);
+}
+
+.closing-card > * { position: relative; z-index: 1; }
 
 .closing .eyebrow { color: rgba(245, 239, 231, 0.7); }
 .closing h2 { max-width: 15ch; margin-bottom: 1.75rem; font-size: clamp(2.2rem, 4vw, 3.8rem); line-height: 1.06; }
