@@ -90,18 +90,9 @@ export function RitualExplorer({ products }: RitualExplorerProps) {
       </div>
 
       <div className="ritual-stage">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={active}
-            className="ritual-image"
-            initial={{ opacity: 1, clipPath: 'inset(4% 0 4% 0)', scale: 1.01 }}
-            animate={{ opacity: 1, clipPath: 'inset(0% 0 0% 0)', scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <img src={current.image} alt={current.imageAlt} loading="eager" />
-          </motion.div>
-        </AnimatePresence>
+        <div className="ritual-image">
+          <img src={current.image} alt={current.imageAlt} loading="eager" />
+        </div>
 
         <div className="ritual-content">
           <span className="ritual-number">
