@@ -1,47 +1,72 @@
-import { motion } from 'motion/react';
+import { useRef, type CSSProperties } from 'react';
+import { ArrowIcon } from '../../components/ArrowIcon/ArrowIcon';
+import { requestCatalogFilter } from '../../lib/catalogBus';
+import { useMagnetic, usePointerDepth, useScrollScenes } from '../../lib/motion';
+
+const depth = (value: number, tilt = 0) => ({ '--depth': value, '--tilt': tilt }) as CSSProperties;
+
+// Ingredients named on the product label shown in the photo (Aceite corporal Caléndula y Naranja).
+const labelNotes = ['Caléndula', 'Naranja', 'Vitamina E', 'Ácido hialurónico'];
 
 export function EditorialMoment() {
-  return (
-    <section id="editorial" className="campaign-moment">
-      <motion.figure
-        className="campaign-moment-media"
-        initial={{ opacity: 0, clipPath: 'inset(6% 2% 6% 2% round 3rem)' }}
-        whileInView={{ opacity: 1, clipPath: 'inset(0% 0% 0% 0% round 0rem)' }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.85 }}
-      >
-        <img
-          src="/products/catalog/aceite-naranja-calendula.webp"
-          alt="Ritual corporal BRAIMARÚ con aceite de Caléndula y Naranja"
-          loading="lazy"
-          width="1100"
-          height="1400"
-          onError={(event) => {
-            if (event.currentTarget.dataset.fallbackApplied) return;
-            event.currentTarget.dataset.fallbackApplied = 'true';
-            event.currentTarget.src = '/editorial/cafe-naranja-campaign.webp';
-          }}
-        />
-      </motion.figure>
+  const root = useRef<HTMLElement>(null);
+  useScrollScenes(root);
+  usePointerDepth(root);
+  useMagnetic(root);
 
-      <motion.div
-        className="campaign-moment-copy"
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.7 }}
-      >
-        <p className="eyebrow">Cuidado consciente</p>
-        <h2>Tu rutina puede sentirse <em>mucho mejor.</em></h2>
-        <p>
-          Una textura agradable, un aroma cálido y unos minutos para ti. No hace falta complicar el cuidado para hacerlo especial.
-        </p>
-        <div className="campaign-moment-notes" aria-label="Principios de la experiencia">
-          <span>Textura</span>
-          <span>Aroma</span>
-          <span>Bienestar</span>
+  return (
+    <section id="editorial" className="campaign" ref={root}>
+      <div className="campaign-inner">
+        <div className="campaign-copy">
+          <p className="eyebrow" data-fade>Cuidado consciente</p>
+          <h2 data-lines>Tu rutina puede sentirse <em>mucho mejor.</em></h2>
+          <p className="campaign-lede" data-fade data-delay="0.1">
+            Una textura agradable, un aroma cálido y unos minutos para ti. El cuidado no tiene que ser complicado para sentirse especial.
+          </p>
+          <ul className="campaign-notes" aria-label="En la etiqueta del Aceite corporal Caléndula y Naranja" data-stagger>
+            {labelNotes.map((note) => <li key={note}>{note}</li>)}
+          </ul>
+          <a
+            className="button light"
+            href="#catalogo"
+            onClick={() => requestCatalogFilter('aceites-corporales')}
+            data-magnetic
+            data-fade
+            data-delay="0.2"
+          >
+            Ver aceites corporales <ArrowIcon />
+          </a>
         </div>
-      </motion.div>
+
+        <div className="campaign-stage">
+          <svg className="campaign-badge depth" style={depth(-16, 4)} viewBox="0 0 120 120" aria-hidden="true">
+            <defs>
+              <path id="badge-circle" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0" />
+            </defs>
+            <text>
+              <textPath href="#badge-circle" startOffset="0">
+                BELLEZA NATURAL · BIENESTAR REAL · BELLEZA NATURAL · BIENESTAR REAL ·
+              </textPath>
+            </text>
+          </svg>
+
+          <figure className="campaign-photo depth" style={depth(14, -1.5)} data-mask data-parallax="4">
+            <img
+              src="/products/catalog/aceite-naranja-calendula.webp"
+              alt="Aceite corporal Caléndula y Naranja BRAIMARÚ aplicado sobre la piel"
+              width="720"
+              height="900"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+
+          <p className="campaign-tag depth" style={depth(28)} aria-hidden="true">
+            <span>Ritual corporal</span>
+            Caléndula + Naranja
+          </p>
+        </div>
+      </div>
     </section>
   );
 }

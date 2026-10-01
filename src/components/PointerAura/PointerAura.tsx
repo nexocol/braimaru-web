@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-const interactiveSelector = 'a, button, [role="button"], .product-card, .collections-visual, .ritual-visual';
+const interactiveSelector = 'a, button, [role="button"], .product-card, .panel, .ritual-visual';
 
 export function PointerAura() {
   const auraRef = useRef<HTMLDivElement>(null);

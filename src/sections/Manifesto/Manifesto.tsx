@@ -1,39 +1,36 @@
-import { motion } from 'motion/react';
+import { useRef } from 'react';
+import { ArrowIcon } from '../../components/ArrowIcon/ArrowIcon';
+import { useScrollScenes } from '../../lib/motion';
+
+function Pill({ src, className = '' }: { src: string; className?: string }) {
+  return (
+    <span className={`pill ${className}`} aria-hidden="true">
+      <img src={src} alt="" loading="lazy" decoding="async" />
+    </span>
+  );
+}
 
 export function Manifesto() {
-  return (
-    <section className="manifesto section-shell">
-      <div className="manifesto-copy-block">
-        <p className="eyebrow">Nuestra esencia</p>
-        <motion.h2
-          initial={{ opacity: 0, y: 22 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.35 }}
-          transition={{ duration: 0.65 }}
-        >
-          Cuidarte no debería sentirse como una tarea. <em>Debería sentirse bien.</em>
-        </motion.h2>
-        <p className="manifesto-copy">
-          BRAIMARÚ reúne textura, aroma y bienestar para acompañar el cuerpo y el cabello con una rutina más cercana, sensorial y fácil de disfrutar.
-        </p>
-      </div>
+  const root = useRef<HTMLElement>(null);
+  useScrollScenes(root);
 
-      <motion.figure
-        className="manifesto-detail"
-        initial={{ opacity: 0, y: 24, rotate: 1.2 }}
-        whileInView={{ opacity: 1, y: 0, rotate: -1.2 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.7, delay: 0.08 }}
-      >
-        <img
-          src="/products/catalog/balsamo-labial.webp"
-          alt="Bálsamo labial BRAIMARÚ"
-          loading="lazy"
-          width="560"
-          height="760"
-        />
-        <figcaption>Pequeños gestos. Bienestar cotidiano.</figcaption>
-      </motion.figure>
+  return (
+    <section className="manifesto section-shell" ref={root}>
+      <p className="eyebrow" data-fade>Nuestra esencia</p>
+
+      <h2 className="manifesto-title" data-lines>
+        Cuidarte no debería sentirse <Pill src="/editorial/exfoliante-cafe-v11.webp" className="pill--soap" /> como
+        una tarea. <em>Debería sentirse</em> <Pill src="/products/catalog/balsamo-labial.webp" className="pill--tube" /> <em>bien.</em>
+      </h2>
+
+      <div className="manifesto-foot" data-stagger>
+        <p>
+          BRAIMARÚ reúne textura, aroma y bienestar para acompañar el cuerpo, el cabello y los labios con una rutina cercana, sensorial y fácil de disfrutar.
+        </p>
+        <a className="text-link" href="#colecciones">
+          Explorar colecciones <ArrowIcon />
+        </a>
+      </div>
     </section>
   );
 }

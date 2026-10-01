@@ -1,9 +1,12 @@
+import { useEffect } from 'react';
 import { AdminApp } from '../admin/AdminApp';
 import { AdminLogin } from '../admin/AdminLogin';
 import { Header } from '../components/Header/Header';
 import { PointerAura } from '../components/PointerAura/PointerAura';
+import { QuickViewProvider } from '../components/ProductQuickView/QuickViewProvider';
 import { useStorefrontData } from '../hooks/useStorefrontData';
 import { Footer } from '../layout/Footer/Footer';
+import { refreshScrollTriggers } from '../lib/motion';
 import { BRAIMARU_WHATSAPP_PHONE } from '../lib/whatsapp';
 import { BrandStory } from '../sections/BrandStory/BrandStory';
 import { Catalog } from '../sections/Catalog/Catalog';
@@ -22,6 +25,14 @@ function StorefrontApp() {
     whatsapp_phone: storefront.site.whatsapp_phone ?? BRAIMARU_WHATSAPP_PHONE,
   };
   const phone = site.whatsapp_phone;
+
+  useEffect(() => {
+    // fonts and lazy images change section heights: keep scroll scenes aligned
+    const refresh = () => refreshScrollTriggers();
+    void document.fonts?.ready.then(refresh);
+    window.addEventListener('load', refresh);
+    return () => window.removeEventListener('load', refresh);
+  }, []);
 
   if (storefront.loading) {
     return (
@@ -51,22 +62,24 @@ function StorefrontApp() {
   }
 
   return (
-    <div data-catalog-source={storefront.source ?? undefined}>
-      <PointerAura />
-      <Header phone={phone} />
-      <main>
-        <Hero phone={phone} />
-        <Manifesto />
-        <CategoryShowcase products={storefront.products} />
-        <FeaturedProducts products={storefront.products} phone={phone} />
-        <EditorialMoment />
-        <RitualExplorer products={storefront.products} />
-        <BrandStory />
-        <Catalog products={storefront.products} phone={phone} />
-        <ClosingCTA phone={phone} />
-      </main>
-      <Footer site={site} />
-    </div>
+    <QuickViewProvider phone={phone}>
+      <div data-catalog-source={storefront.source ?? undefined}>
+        <PointerAura />
+        <Header phone={phone} />
+        <main>
+          <Hero phone={phone} products={storefront.products} />
+          <Manifesto />
+          <CategoryShowcase products={storefront.products} />
+          <FeaturedProducts products={storefront.products} />
+          <EditorialMoment />
+          <RitualExplorer products={storefront.products} phone={phone} />
+          <BrandStory />
+          <Catalog products={storefront.products} phone={phone} />
+          <ClosingCTA phone={phone} />
+        </main>
+        <Footer site={site} />
+      </div>
+    </QuickViewProvider>
   );
 }
 

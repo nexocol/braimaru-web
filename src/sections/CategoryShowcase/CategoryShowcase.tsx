@@ -1,6 +1,8 @@
-import { useMemo, useState } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
-import type { Product } from '../../types/catalog';
+import { useMemo, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react';
+import { ArrowIcon } from '../../components/ArrowIcon/ArrowIcon';
+import { hasFinePointer, useScrollScenes } from '../../lib/motion';
+import { requestCatalogFilter } from '../../lib/catalogBus';
+import type { Product, ProductCategory } from '../../types/catalog';
 
 interface CategoryShowcaseProps {
   products: Product[];
@@ -15,6 +17,8 @@ interface CollectionDefinition {
   copy: string;
   image: string;
   imageAlt: string;
+  position: string;
+  filter: ProductCategory;
   matches: (product: Product) => boolean;
 }
 
@@ -24,42 +28,51 @@ const collections: CollectionDefinition[] = [
     label: 'Cuerpo',
     kicker: 'Aceites + cremas',
     copy: 'Masaje, hidratación y texturas que hacen más agradable el cuidado cotidiano.',
-    image: '/editorial/cafe-naranja-campaign.webp',
-    imageAlt: 'Aceite corporal Café y Naranja BRAIMARÚ',
+    image: '/products/catalog/aceite-cafe-naranja.webp',
+    imageAlt: 'Aceites corporales Café y Naranja BRAIMARÚ',
+    position: '50% 34%',
+    filter: 'aceites-corporales',
     matches: (product) => product.category === 'aceites-corporales' || product.category === 'cremas-corporales',
   },
   {
     id: 'cabello',
     label: 'Cabello',
     kicker: 'Rutina capilar',
-    copy: 'Limpieza, suavidad y protección en una selección pensada para acompañarse.',
+    copy: 'Shampoo, acondicionador y termoprotector pensados para usarse juntos.',
     image: '/editorial/hair-line-v11.webp',
     imageAlt: 'Línea de cuidado capilar BRAIMARÚ',
+    position: '70% 50%',
+    filter: 'cuidado-capilar',
     matches: (product) => product.category === 'cuidado-capilar',
   },
   {
     id: 'jabones',
     label: 'Jabones',
     kicker: 'Limpieza sensorial',
-    copy: 'Aromas, ingredientes y texturas para que la ducha también se sienta como una pausa.',
-    image: '/products/catalog/jabon-exfoliante-cafe.webp',
-    imageAlt: 'Jabón exfoliante de café BRAIMARÚ',
+    copy: 'Aromas y texturas para que la ducha también se sienta como una pausa.',
+    image: '/editorial/exfoliante-cafe-v11.webp',
+    imageAlt: 'Jabones exfoliantes de café BRAIMARÚ',
+    position: '50% 58%',
+    filter: 'jabones',
     matches: (product) => product.category === 'jabones',
   },
   {
     id: 'labios',
     label: 'Labios',
-    kicker: 'Hidratación',
+    kicker: 'Cuidado labial',
     copy: 'Un gesto pequeño, fácil de llevar contigo y simple de sumar a cualquier rutina.',
     image: '/products/catalog/balsamo-labial.webp',
     imageAlt: 'Bálsamo labial BRAIMARÚ',
+    position: '50% 38%',
+    filter: 'cuidado-labial',
     matches: (product) => product.category === 'cuidado-labial',
   },
 ];
 
 export function CategoryShowcase({ products }: CategoryShowcaseProps) {
+  const root = useRef<HTMLElement>(null);
   const [activeId, setActiveId] = useState<CollectionId>('cuerpo');
-  const active = collections.find((collection) => collection.id === activeId) ?? collections[0];
+  useScrollScenes(root);
 
   const counts = useMemo(
     () =>
@@ -72,63 +85,86 @@ export function CategoryShowcase({ products }: CategoryShowcaseProps) {
     [products],
   );
 
+  const onKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (event.key !== 'ArrowRight' && event.key !== 'ArrowDown' && event.key !== 'ArrowLeft' && event.key !== 'ArrowUp') return;
+    event.preventDefault();
+    const step = event.key === 'ArrowRight' || event.key === 'ArrowDown' ? 1 : -1;
+    const next = collections[(index + step + collections.length) % collections.length];
+    setActiveId(next.id);
+    root.current?.querySelector<HTMLButtonElement>(`[data-collection="${next.id}"]`)?.focus();
+  };
+
   return (
-    <section id="colecciones" className="collections section-shell">
-      <div className="collections-heading">
+    <section id="colecciones" className="collections section-shell" ref={root}>
+      <div className="section-head">
         <div>
-          <p className="eyebrow">Explora BRAIMARÚ</p>
-          <h2>Empieza por cómo quieres <em>sentirte.</em></h2>
+          <p className="eyebrow" data-fade>Explora BRAIMARÚ</p>
+          <h2 data-lines>Empieza por cómo<br />quieres <em>sentirte.</em></h2>
         </div>
-        <p>
-          Entra por el ritual que buscas y descubre la parte de BRAIMARÚ que mejor encaja con tu momento.
+        <p data-fade data-delay="0.1">
+          Elige una línea y descubre los productos que mejor encajan con tu momento.
         </p>
       </div>
 
-      <div className="collections-stage">
-        <div className="collections-list" role="tablist" aria-label="Colecciones BRAIMARÚ">
-          {collections.map((collection, index) => (
-            <button
+      <div className="panels" role="group" aria-label="Colecciones BRAIMARÚ" data-fade data-delay="0.12">
+        {collections.map((collection, index) => {
+          const active = activeId === collection.id;
+          const count = counts[collection.id];
+          return (
+            <article
               key={collection.id}
-              type="button"
-              role="tab"
-              aria-selected={activeId === collection.id}
-              onMouseEnter={() => setActiveId(collection.id)}
-              onFocus={() => setActiveId(collection.id)}
-              onClick={() => setActiveId(collection.id)}
-            >
-              <span className="collections-index">0{index + 1}</span>
-              <span className="collections-label">{collection.label}</span>
-              <span className="collections-count">{counts[collection.id]} productos</span>
-            </button>
-          ))}
-        </div>
-
-        <AnimatePresence mode="wait">
-          <motion.figure
-            key={active.id}
-            className="collections-visual"
-            initial={{ opacity: 0, clipPath: 'inset(5% 4% 5% 4% round 3rem)' }}
-            animate={{ opacity: 1, clipPath: 'inset(0% 0% 0% 0% round 0rem)' }}
-            exit={{ opacity: 0, scale: 0.99 }}
-            transition={{ duration: 0.48 }}
-          >
-            <img
-              src={active.image}
-              alt={active.imageAlt}
-              loading="lazy"
-              onError={(event) => {
-                if (event.currentTarget.dataset.fallbackApplied) return;
-                event.currentTarget.dataset.fallbackApplied = 'true';
-                event.currentTarget.src = '/editorial/family-v11.webp';
+              className={`panel${active ? ' is-active' : ''}`}
+              style={{ '--pos': collection.position } as CSSProperties}
+              onPointerEnter={(event) => {
+                if (event.pointerType === 'mouse' && hasFinePointer()) setActiveId(collection.id);
               }}
-            />
-            <figcaption>
-              <span>{active.kicker}</span>
-              <p>{active.copy}</p>
-              <a href="#catalogo">Ver productos</a>
-            </figcaption>
-          </motion.figure>
-        </AnimatePresence>
+            >
+              <img src={collection.image} alt={collection.imageAlt} loading="lazy" decoding="async" />
+              <div className="panel-shade" aria-hidden="true" />
+
+              <button
+                type="button"
+                id={`collection-tab-${collection.id}`}
+                data-collection={collection.id}
+                className="panel-tab"
+                aria-expanded={active}
+                aria-controls={`collection-panel-${collection.id}`}
+                onClick={() => setActiveId(collection.id)}
+                onFocus={() => setActiveId(collection.id)}
+                onKeyDown={(event) => onKeyDown(event, index)}
+              >
+                <span className="sr-only">{collection.label}</span>
+              </button>
+
+              <span className="panel-index" aria-hidden="true">0{index + 1}</span>
+              <span className="panel-label-v" aria-hidden="true">{collection.label}</span>
+
+              <div className="panel-content">
+                <h3 className="panel-label" aria-hidden="true">{collection.label}</h3>
+                <div
+                  className="panel-extra"
+                  id={`collection-panel-${collection.id}`}
+                  role="region"
+                  aria-labelledby={`collection-tab-${collection.id}`}
+                  aria-hidden={!active}
+                  inert={!active}
+                >
+                  <div>
+                    <span className="panel-kicker">{collection.kicker}</span>
+                    <p>{collection.copy}</p>
+                    <a
+                      className="panel-link"
+                      href="#catalogo"
+                      onClick={() => requestCatalogFilter(collection.filter)}
+                    >
+                      Ver {count} {count === 1 ? 'producto' : 'productos'} <ArrowIcon />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </article>
+          );
+        })}
       </div>
     </section>
   );

@@ -17,7 +17,7 @@ export const products: Product[] = [
     shortDescription: "Aceite corporal de canela y clavos de olor.",
     benefits: ["Ideal para masajes corporales","Aroma cálido y natural"],
     priceCop: null,
-    image: "/products/aceite-corporal-01.webp",
+    image: "/products/aceite-canela-clavos-v2.webp",
     imageAlt: "Aceite de canela y clavos de olor BRAIMARÚ",
     featured: true,
     active: true,
