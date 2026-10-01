@@ -1,3 +1,4 @@
+import { upgradeImage } from '../../data/artDirection';
 import type { ApiCategory, ApiProduct } from './types';
 import type { Category, Product, ProductCategory, RitualTag } from '../../types/catalog';
 
@@ -37,7 +38,7 @@ export function adaptApiProduct(input: ApiProduct): Product | null {
     description: input.description ?? undefined,
     benefits: input.benefits.filter((benefit) => typeof benefit === 'string'),
     priceCop: input.price_cop,
-    image: input.image_url,
+    image: upgradeImage(input.image_url),
     imageAlt: input.image_url ? `${input.name} BRAIMARÚ` : '',
     featured: input.featured,
     active: input.active,

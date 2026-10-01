@@ -20,9 +20,11 @@ const MAP: Record<string, ArtDirection> = {
   // legacy source (still served by older catalog rows): crop away the cream strip + stray text
   'aceite-corporal-01.webp': { position: '80% 52%', scale: 1.38, origin: '80% 54%' },
   'aceite-cafe-naranja.webp': { position: '50% 38%' },
-  'aceite-naranja-calendula.webp': { position: '50% 50%' },
-  'shampoo-capilar-v11.webp': { position: '50% 48%', scale: 1.06, origin: '50% 50%' },
-  'acondicionador-capilar-v11.webp': { position: '50% 48%', scale: 1.06, origin: '50% 50%' },
+  // baked-in ingredient infographic painted out of the wall (unconfirmed claims); both caps stay in frame
+  'aceite-naranja-calendula.webp': { position: '50% 20%' },
+  // both bottles were re-framed (clean wall, no cream strip); no extra zoom needed
+  'shampoo-capilar-v11.webp': { position: '50% 50%' },
+  'acondicionador-capilar-v11.webp': { position: '30% 52%' },
   'termoprotector-capilar.webp': { position: '50% 46%' },
   // soap on gold: "IDEAL PARA:" fragment lives at the very bottom of the source
   'jabon-canela-clavos.webp': { position: '50% 22%', scale: 1.22, origin: '50% 24%' },
@@ -55,4 +57,17 @@ export function artStyle(src: string | null | undefined): Record<string, string 
     '--ad-scale': art.scale ?? 1,
     '--ad-origin': art.origin ?? 'center',
   };
+}
+
+/**
+ * Static photos that were re-framed after the catalog rows were created. Rows stored in D1 keep
+ * pointing at the old file name, so the storefront swaps them here instead of touching the data.
+ */
+const IMAGE_UPGRADES: Record<string, string> = {
+  '/products/aceite-corporal-01.webp': '/products/aceite-canela-clavos-v2.webp',
+};
+
+export function upgradeImage<T extends string | null | undefined>(src: T): T {
+  if (!src) return src;
+  return (IMAGE_UPGRADES[src as string] ?? src) as T;
 }
