@@ -64,7 +64,7 @@ const rituals: RitualDefinition[] = [
     title: 'Tu ritual corporal',
     copy: 'Aceites y texturas para transformar la rutina en un momento dedicado a ti.',
     image: '/products/catalog/aceite-naranja-calendula.webp',
-    fit: 'contain',
+    fit: 'cover',
     imageAlt: 'Aceite corporal Caléndula y Naranja BRAIMARÚ aplicado sobre la piel',
     picks: ['aceite-corporal-calendula-naranja', 'aceite-corporal-canela', 'jabon-canela-clavos'],
   },

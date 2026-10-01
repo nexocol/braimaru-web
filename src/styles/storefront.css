@@ -509,9 +509,12 @@
   line-height: 1.3;
 }
 
+@media (max-width: 1360px) {
+  .hero-note { display: none; }
+}
+
 @media (max-width: 1100px) {
   .hero-chip { left: -1rem; }
-  .hero-note { display: none; }
 }
 
 @media (max-width: 760px) {
@@ -1000,14 +1003,14 @@
   animation: badge-spin 40s linear infinite;
 }
 
-.campaign-badge text { fill: currentColor; font: 600 7.4px "Manrope", sans-serif; letter-spacing: 0.17em; }
+.campaign-badge text { fill: currentColor; font: 600 8.1px "Manrope", sans-serif; }
 
 @keyframes badge-spin { to { transform: rotate(360deg); } }
 
 .campaign-tag {
   position: absolute;
   bottom: 8%;
-  left: -1%;
+  left: calc(-1% - 4rem);
   z-index: 3;
   display: grid;
   margin: 0;
@@ -1234,7 +1237,10 @@
 @media (max-width: 900px) {
   .story-grid { grid-template-columns: minmax(0, 1fr); }
   .story-copy { order: 1; }
-  .story-collage { order: 2; height: 27rem; }
+  /* height follows the width: the 4:5 arch is ~1.25x its width, so a fixed height used to overflow */
+  .story-collage { order: 2; height: clamp(27rem, 70vw, 36rem); }
+  .story-main { width: 52%; }
+  .story-detail { width: 36%; }
   .story-principles { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
 }
 
@@ -1264,7 +1270,7 @@
   backdrop-filter: blur(14px);
 }
 
-.catalog-filters { display: flex; gap: 0.4rem; overflow-x: auto; scrollbar-width: none; }
+.catalog-filters { display: flex; min-width: 0; flex: 1 1 auto; gap: 0.4rem; overflow-x: auto; scrollbar-width: none; }
 .catalog-filters::-webkit-scrollbar { display: none; }
 
 .catalog-filters button {
@@ -1325,6 +1331,7 @@
 
 @media (max-width: 899px) {
   .catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .catalog-result-count { display: none; }
 }
 
 @media (max-width: 560px) {
@@ -1396,6 +1403,13 @@
 /* the packshot is always shown whole; the blurred copy fills the rest */
 .quickview-media { min-height: 20rem; }
 .quickview-media > img { --ad-fit: contain; scale: 1; }
+/* photos fade into the blurred copy of themselves so the letterbox never shows a seam;
+   label artwork (is-label-art) must stay sharp to its edges */
+.quickview-media:not(.is-label-art) > img {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+}
+.quickview-media::before { opacity: 0.8; }
 .quickview-media .product-media-brand { position: absolute; }
 
 .quickview-copy {

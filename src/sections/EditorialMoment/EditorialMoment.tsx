@@ -44,8 +44,8 @@ export function EditorialMoment() {
               <path id="badge-circle" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0" />
             </defs>
             <text>
-              <textPath href="#badge-circle" startOffset="0">
-                BELLEZA NATURAL · BIENESTAR REAL · BELLEZA NATURAL · BIENESTAR REAL ·
+              <textPath href="#badge-circle" startOffset="0" textLength="272" lengthAdjust="spacing">
+                BELLEZA NATURAL · BIENESTAR REAL ·
               </textPath>
             </text>
           </svg>

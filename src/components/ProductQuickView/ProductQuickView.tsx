@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { artStyle } from '../../data/artDirection';
+import { artDirectionFor, artStyle } from '../../data/artDirection';
 import { formatCopPrice } from '../../lib/format/price';
 import { buildWhatsAppUrl } from '../../lib/whatsapp';
 import type { Product } from '../../types/catalog';
@@ -100,7 +100,7 @@ export function ProductQuickView({ product, phone = null, onClose }: ProductQuic
             </button>
 
             <div
-              className="quickview-media media-stage"
+              className={`quickview-media media-stage${artDirectionFor(product.image).fit === 'contain' ? ' is-label-art' : ''}`}
               style={product.image && !imageFailed ? ({ ...artStyle(product.image), '--stage-img': `url("${product.image}")` } as CSSProperties) : undefined}
             >
               {product.image && !imageFailed ? (
