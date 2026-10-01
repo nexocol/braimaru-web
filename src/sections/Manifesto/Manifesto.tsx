@@ -1,5 +1,3 @@
-import { motion } from 'motion/react';
-
 export function Manifesto() {
   return (
     <section className="manifesto section-shell">
