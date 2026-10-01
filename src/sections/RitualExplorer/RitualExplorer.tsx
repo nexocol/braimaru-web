@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
 import type { Product, RitualTag } from '../../types/catalog';
 
 interface RitualDefinition {
