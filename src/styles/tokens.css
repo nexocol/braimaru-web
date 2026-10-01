@@ -1,26 +1,33 @@
 :root {
-  --ivory: #f6efe7;
-  --shell: #efe0d1;
-  --sand: #e6d3c0;
-  --peach: #e2c4a0;
-  --taupe: #9c825c;
-  --ink: #261e19;
-  --ink-soft: #5c4d43;
-  --botanical: #6f6f55;
-  --accent: #c18b48;
-  --line: rgba(38, 30, 25, 0.16);
+  --ivory: #f5efe7;
+  --shell: #eadbcd;
+  --sand: #decab8;
+  --peach: #d9b993;
+  --taupe: #9b7f5a;
+  --ink: #211915;
+  --ink-soft: #66564b;
+  --botanical: #6f705a;
+  --accent: #b88750;
+  --line: rgba(33, 25, 21, 0.14);
+  --line-light: rgba(255, 250, 245, 0.18);
 
-  --container: 90rem;
-  --space-page: clamp(1.5rem, 5vw, 6rem);
-  --space-section: 9rem;
+  --container: 86rem;
+  --space-page: clamp(1.25rem, 4vw, 4.5rem);
+  --space-section: clamp(4.75rem, 7vw, 7.5rem);
 
+  --radius-xs: 0.5rem;
+  --radius-sm: 0.9rem;
+  --radius-panel: 1.5rem;
   --radius-pill: 999px;
-  --radius-panel: 1.2rem;
 
-  --duration-fast: 220ms;
-  --duration-base: 300ms;
-  --duration-slow: 700ms;
+  --shadow-soft: 0 24px 70px rgba(49, 31, 20, 0.1);
+  --shadow-lift: 0 30px 80px rgba(42, 27, 18, 0.15);
+
+  --duration-fast: 180ms;
+  --duration-base: 320ms;
+  --duration-slow: 720ms;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 
   --z-nav: 50;
+  --z-modal: 100;
 }

@@ -8,10 +8,12 @@ interface ClosingCTAProps {
 export function ClosingCTA({ phone = null }: ClosingCTAProps) {
   return (
     <section className="closing">
-      <p className="eyebrow">BRAIMARÚ</p>
-      <h2>Belleza natural,<br /><em>bienestar real.</em></h2>
+      <div>
+        <p className="eyebrow">¿Hablamos?</p>
+        <h2>Encuentra el ritual que mejor se siente contigo.</h2>
+      </div>
       <a
-        className="button primary light"
+        className="button light"
         href={buildWhatsAppUrl({ phone })}
         target="_blank"
         rel="noreferrer"

@@ -6,6 +6,7 @@ import { Footer } from '../layout/Footer/Footer';
 import { BRAIMARU_WHATSAPP_PHONE } from '../lib/whatsapp';
 import { BrandStory } from '../sections/BrandStory/BrandStory';
 import { Catalog } from '../sections/Catalog/Catalog';
+import { CategoryShowcase } from '../sections/CategoryShowcase/CategoryShowcase';
 import { ClosingCTA } from '../sections/ClosingCTA/ClosingCTA';
 import { EditorialMoment } from '../sections/EditorialMoment/EditorialMoment';
 import { FeaturedProducts } from '../sections/FeaturedProducts/FeaturedProducts';
@@ -54,10 +55,11 @@ function StorefrontApp() {
       <main>
         <Hero phone={phone} />
         <Manifesto />
+        <CategoryShowcase products={storefront.products} />
         <FeaturedProducts products={storefront.products} phone={phone} />
         <EditorialMoment />
-        <BrandStory />
         <RitualExplorer products={storefront.products} />
+        <BrandStory />
         <Catalog products={storefront.products} phone={phone} />
         <ClosingCTA phone={phone} />
       </main>

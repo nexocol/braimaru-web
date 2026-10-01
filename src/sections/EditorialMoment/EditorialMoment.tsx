@@ -2,55 +2,40 @@ import { motion } from 'motion/react';
 
 export function EditorialMoment() {
   return (
-    <section id="editorial" className="editorial-section">
-      <div className="editorial-visuals">
-        <motion.div
-          className="editorial-image"
-          initial={{ clipPath: 'inset(8% 0 8% 0)', opacity: 0.8 }}
-          whileInView={{ clipPath: 'inset(0% 0 0% 0)', opacity: 1 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.85 }}
-        >
-          <img
-            src="/editorial/hair-line-v11.webp"
-            alt="Línea capilar BRAIMARÚ con shampoo, acondicionador y termoprotector"
-            loading="lazy"
-            width="600"
-            height="711"
-          />
-        </motion.div>
-
-        <motion.figure
-          className="editorial-detail"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.7, delay: 0.12 }}
-        >
-          <img
-            src="/products/catalog/balsamo-labial.webp"
-            alt="Bálsamo labial BRAIMARÚ"
-            loading="lazy"
-            width="700"
-            height="900"
-          />
-          <figcaption>Cuidado que se siente cercano, desde el primer gesto.</figcaption>
-        </motion.figure>
-      </div>
+    <section id="editorial" className="campaign-moment">
+      <motion.figure
+        className="campaign-moment-media"
+        initial={{ opacity: 0, clipPath: 'inset(6% 0 6% 0)' }}
+        whileInView={{ opacity: 1, clipPath: 'inset(0% 0 0% 0)' }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.8 }}
+      >
+        <img
+          src="/products/catalog/aceite-naranja-calendula.webp"
+          alt="Ritual corporal BRAIMARÚ con aceite de Caléndula y Naranja"
+          loading="lazy"
+          width="1100"
+          height="1400"
+        />
+      </motion.figure>
 
       <motion.div
-        className="editorial-copy"
-        initial={{ opacity: 0, x: 30 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true }}
+        className="campaign-moment-copy"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.7 }}
       >
         <p className="eyebrow">Cuidado consciente</p>
-        <h2>Natural no tiene que sentirse simple.</h2>
+        <h2>La rutina cambia cuando el cuidado <em>se disfruta.</em></h2>
         <p>
-          Del cuerpo al cabello, BRAIMARÚ convierte el cuidado cotidiano en una experiencia cálida,
-          sensorial y propia.
+          BRAIMARÚ propone momentos simples: una textura agradable, un aroma cálido y un gesto que devuelve atención al cuerpo.
         </p>
-        <span className="editorial-index">Cuerpo · cabello · labios / BRAIMARÚ</span>
+        <div className="campaign-moment-notes" aria-label="Principios de la experiencia">
+          <span>Textura</span>
+          <span>Aroma</span>
+          <span>Bienestar</span>
+        </div>
       </motion.div>
     </section>
   );

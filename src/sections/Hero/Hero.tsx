@@ -19,61 +19,38 @@ export function Hero({ phone = null }: HeroProps) {
     if (!root.current || reducedMotion) return;
 
     const context = gsap.context(() => {
-      gsap.from('[data-hero-reveal]', {
-        y: 34,
+      gsap.from('[data-hero-line]', {
+        yPercent: 105,
+        duration: 0.95,
+        stagger: 0.09,
+        ease: 'power4.out',
+      });
+
+      gsap.from('[data-hero-fade]', {
+        y: 18,
         opacity: 0,
-        duration: 1,
-        stagger: 0.11,
+        duration: 0.7,
+        stagger: 0.08,
+        delay: 0.18,
         ease: 'power3.out',
       });
 
-      gsap.from('[data-hero-card]', {
-        y: 44,
-        scale: 0.97,
+      gsap.from('.hero-media-shell', {
+        clipPath: 'inset(8% 7% 8% 7% round 2rem)',
+        scale: 0.985,
         opacity: 0,
-        duration: 1.2,
-        stagger: 0.12,
+        duration: 1.15,
         ease: 'power3.out',
       });
 
-      gsap.from('.hero-logo-stamp', {
-        y: 22,
-        opacity: 0,
-        duration: 1,
-        delay: 0.45,
-        ease: 'power2.out',
-      });
-
-      gsap.to('.hero-campaign-main', {
-        yPercent: 4,
+      gsap.to('.hero-media img', {
+        yPercent: 3.5,
         ease: 'none',
         scrollTrigger: {
           trigger: root.current,
           start: 'top top',
           end: 'bottom top',
-          scrub: 0.55,
-        },
-      });
-
-      gsap.to('.hero-campaign-side', {
-        yPercent: -7,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: root.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.7,
-        },
-      });
-
-      gsap.to('.hero-campaign-detail', {
-        yPercent: 9,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: root.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.75,
+          scrub: 0.6,
         },
       });
     }, root);
@@ -83,69 +60,47 @@ export function Hero({ phone = null }: HeroProps) {
 
   return (
     <section id="inicio" className="hero" ref={root}>
-      <div className="hero-grid-lines" aria-hidden="true" />
-      <div className="hero-kicker" data-hero-reveal>Cosmética natural · Colombia</div>
+      <div className="hero-copy">
+        <p className="eyebrow" data-hero-fade>Cosmética natural · Colombia</p>
 
-      <h1 className="hero-title" data-hero-reveal>
-        <span>Belleza</span>
-        <span>natural.</span>
-      </h1>
+        <h1 className="hero-title" aria-label="Belleza natural, bienestar real">
+          <span className="hero-line"><span data-hero-line>Belleza natural,</span></span>
+          <span className="hero-line hero-line--accent"><span data-hero-line>bienestar real.</span></span>
+        </h1>
 
-      <div className="hero-campaign" aria-hidden="true">
-        <div className="hero-campaign-backdrop" />
+        <p className="hero-lede" data-hero-fade>
+          Ritual, textura y cuidado consciente reunidos en una experiencia creada para sentirse tan bien como se ve.
+        </p>
 
-        <figure className="hero-campaign-main" data-hero-card>
-          <img
-            src="/editorial/cafe-naranja-campaign.webp"
-            alt=""
-            width="900"
-            height="1180"
-            fetchPriority="high"
-          />
-        </figure>
-
-        <figure className="hero-campaign-side" data-hero-card>
-          <img
-            src="/products/catalog/crema-manos-corporal.webp"
-            alt=""
-            width="900"
-            height="1180"
-            fetchPriority="high"
-          />
-        </figure>
-
-        <figure className="hero-campaign-detail" data-hero-card>
-          <img
-            src="/products/catalog/balsamo-labial.webp"
-            alt=""
-            width="720"
-            height="960"
-          />
-        </figure>
-
-        <img
-          className="hero-logo-stamp"
-          src="/brand/braimaru-logo.webp"
-          alt=""
-          width="420"
-          height="300"
-        />
-
-        <span className="hero-campaign-caption">Cuerpo · cabello · bienestar</span>
-      </div>
-
-      <div className="hero-copy" data-hero-reveal>
-        <p>Cuidado consciente, texturas cálidas y rituales pensados para habitar tu bienestar.</p>
-        <div className="hero-actions">
-          <a className="button primary" href="#productos">Descubrir productos <ArrowIcon /></a>
+        <div className="hero-actions" data-hero-fade>
+          <a className="button primary" href="#catalogo">Descubrir productos <ArrowIcon /></a>
           <a className="button ghost" href={buildWhatsAppUrl({ phone })} target="_blank" rel="noreferrer">
             Hablar por WhatsApp
           </a>
         </div>
+
+        <div className="hero-meta" data-hero-fade>
+          <span>Cuerpo</span>
+          <span>Cabello</span>
+          <span>Labios</span>
+        </div>
       </div>
 
-      <div className="hero-footnote" data-hero-reveal>
-        01 — Belleza natural, bienestar real
+      <div className="hero-media">
+        <div className="hero-media-shell">
+          <img
+            src="/editorial/cafe-naranja-campaign.webp"
+            alt="Ritual corporal BRAIMARÚ con aceite Café y Naranja"
+            width="1100"
+            height="1400"
+            fetchPriority="high"
+          />
+          <div className="hero-media-overlay" aria-hidden="true" />
+          <div className="hero-media-caption">
+            <span>01 / Ritual corporal</span>
+            <strong>Café · Naranja</strong>
+          </div>
+        </div>
       </div>
     </section>
   );
