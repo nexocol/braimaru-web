@@ -76,14 +76,14 @@ export function Hero({ phone = null }: HeroProps) {
         <div className="hero-visual-mask">
           <img
             className="hero-visual-main"
-            src="/products/aceite-corporal-01.webp"
+            src="/products/shampoo-capilar-v11.webp"
             alt=""
             width="520"
             height="650"
             fetchPriority="high"
           />
         </div>
-        <span className="hero-product-note">Exfoliante de café</span>
+        <span className="hero-product-note">Shampoo capilar</span>
       </div>
 
       <div className="hero-copy" data-hero-reveal>
