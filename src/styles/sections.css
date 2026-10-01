@@ -54,7 +54,7 @@
   top: 50%;
   left: 53%;
   z-index: 1;
-  width: min(45vw, 43rem);
+  width: min(47vw, 45rem);
   aspect-ratio: 1;
   transform: translate(-50%, -48%);
 }
@@ -72,11 +72,11 @@
   top: 50%;
   left: 50%;
   z-index: 2;
-  width: 63%;
-  aspect-ratio: 0.92;
+  width: 72%;
+  aspect-ratio: 1.12;
   overflow: hidden;
   transform: translate(-50%, -50%);
-  border-radius: 50% 50% 43% 45%;
+  border-radius: 42% 58% 48% 52% / 48% 44% 56% 52%;
   background: var(--shell);
   box-shadow: 0 32px 80px rgba(77, 50, 27, 0.16);
 }
@@ -84,20 +84,21 @@
 .hero-visual-main {
   width: 100%;
   height: 100%;
-  padding: 6%;
-  object-fit: contain;
+  padding: 0;
+  object-fit: cover;
   object-position: center;
-  background: #fff;
+  background: var(--shell);
 }
 
+/* hero logo stamp intentionally removed; brand is carried by header */
 .hero-logo-stamp {
   position: absolute;
   bottom: 5%;
   left: -7%;
   z-index: 3;
   width: 40%;
-  opacity: 0.9;
-  mix-blend-mode: multiply;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .hero-product-note {
@@ -178,8 +179,8 @@
 .manifesto-visual img {
   width: 100%;
   height: 100%;
-  padding: 1rem;
-  object-fit: contain;
+  padding: 0;
+  object-fit: cover;
   object-position: center;
   background: #fff;
 }
