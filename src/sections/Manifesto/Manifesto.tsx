@@ -2,16 +2,12 @@ export function Manifesto() {
   return (
     <section className="manifesto section-shell">
       <div className="manifesto-visual" aria-hidden="true">
-        <motion.img
+        <img
           src="/editorial/exfoliante-cafe-v11.webp"
           alt=""
           loading="eager"
           width="700"
           height="629"
-          initial={{ opacity: 1, scale: 1.02 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, amount: 0.25 }}
-          transition={{ duration: 0.8 }}
         />
       </div>
 
