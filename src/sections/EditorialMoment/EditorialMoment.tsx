@@ -28,13 +28,13 @@ export function EditorialMoment() {
           transition={{ duration: 0.7, delay: 0.12 }}
         >
           <img
-            src="/editorial/exfoliante-cafe-v11.webp"
-            alt="Detalle de la línea exfoliante de café BRAIMARÚ"
+            src="/products/catalog/balsamo-labial.webp"
+            alt="Bálsamo labial BRAIMARÚ"
             loading="lazy"
             width="700"
-            height="629"
+            height="900"
           />
-          <figcaption>Texturas para convertir la rutina en una pausa.</figcaption>
+          <figcaption>Cuidado que se siente cercano, desde el primer gesto.</figcaption>
         </motion.figure>
       </div>
 
@@ -47,9 +47,10 @@ export function EditorialMoment() {
         <p className="eyebrow">Cuidado consciente</p>
         <h2>Natural no tiene que sentirse simple.</h2>
         <p>
-          BRAIMARÚ reúne cuidado corporal y capilar en una experiencia cálida, cercana y sensorial.
+          Del cuerpo al cabello, BRAIMARÚ convierte el cuidado cotidiano en una experiencia cálida,
+          sensorial y propia.
         </p>
-        <span className="editorial-index">BRAIMARÚ / Belleza natural</span>
+        <span className="editorial-index">Cuerpo · cabello · labios / BRAIMARÚ</span>
       </motion.div>
     </section>
   );

@@ -27,24 +27,25 @@ export function Hero({ phone = null }: HeroProps) {
         ease: 'power3.out',
       });
 
-      gsap.from('.hero-visual-mask', {
-        scale: 0.96,
-        clipPath: 'inset(12% 10% 10% 10% round 48% 48% 42% 44%)',
+      gsap.from('[data-hero-card]', {
+        y: 44,
+        scale: 0.97,
         opacity: 0,
-        duration: 1.25,
+        duration: 1.2,
+        stagger: 0.12,
         ease: 'power3.out',
       });
 
-      gsap.from('.hero-orbit', {
-        scale: 0.92,
+      gsap.from('.hero-logo-stamp', {
+        y: 22,
         opacity: 0,
-        duration: 1.2,
-        stagger: 0.14,
+        duration: 1,
+        delay: 0.45,
         ease: 'power2.out',
       });
 
-      gsap.to('.hero-visual-mask', {
-        yPercent: 5,
+      gsap.to('.hero-campaign-main', {
+        yPercent: 4,
         ease: 'none',
         scrollTrigger: {
           trigger: root.current,
@@ -54,14 +55,25 @@ export function Hero({ phone = null }: HeroProps) {
         },
       });
 
-      gsap.to('.hero-logo-stamp', {
-        yPercent: -10,
+      gsap.to('.hero-campaign-side', {
+        yPercent: -7,
         ease: 'none',
         scrollTrigger: {
           trigger: root.current,
           start: 'top top',
           end: 'bottom top',
           scrub: 0.7,
+        },
+      });
+
+      gsap.to('.hero-campaign-detail', {
+        yPercent: 9,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: root.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 0.75,
         },
       });
     }, root);
@@ -79,20 +91,38 @@ export function Hero({ phone = null }: HeroProps) {
         <span>natural.</span>
       </h1>
 
-      <div className="hero-visual-wrap" aria-hidden="true">
-        <div className="hero-aura" />
-        <div className="hero-orbit orbit-one" />
-        <div className="hero-orbit orbit-two" />
-        <div className="hero-visual-mask">
+      <div className="hero-campaign" aria-hidden="true">
+        <div className="hero-campaign-backdrop" />
+
+        <figure className="hero-campaign-main" data-hero-card>
           <img
-            className="hero-visual-main"
-            src="/products/aceite-corporal-01.webp"
+            src="/products/catalog/crema-manos-corporal.webp"
             alt=""
-            width="780"
-            height="900"
+            width="900"
+            height="1180"
             fetchPriority="high"
           />
-        </div>
+        </figure>
+
+        <figure className="hero-campaign-side" data-hero-card>
+          <img
+            src="/products/catalog/aceite-naranja-calendula.webp"
+            alt=""
+            width="900"
+            height="1180"
+            fetchPriority="high"
+          />
+        </figure>
+
+        <figure className="hero-campaign-detail" data-hero-card>
+          <img
+            src="/products/catalog/balsamo-labial.webp"
+            alt=""
+            width="720"
+            height="960"
+          />
+        </figure>
+
         <img
           className="hero-logo-stamp"
           src="/brand/braimaru-logo.webp"
@@ -100,11 +130,12 @@ export function Hero({ phone = null }: HeroProps) {
           width="420"
           height="300"
         />
-        <span className="hero-product-note">Canela · Clavos de olor</span>
+
+        <span className="hero-campaign-caption">Cuerpo · cabello · bienestar</span>
       </div>
 
       <div className="hero-copy" data-hero-reveal>
-        <p>Bienestar real en rituales inspirados en el cuidado consciente.</p>
+        <p>Cuidado consciente, texturas cálidas y rituales pensados para habitar tu bienestar.</p>
         <div className="hero-actions">
           <a className="button primary" href="#productos">Descubrir productos <ArrowIcon /></a>
           <a className="button ghost" href={buildWhatsAppUrl({ phone })} target="_blank" rel="noreferrer">
