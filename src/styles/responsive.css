@@ -1,3 +1,9 @@
+@media (max-width: 1280px) {
+  .hero-campaign-caption {
+    display: none;
+  }
+}
+
 @media (max-width: 900px) {
   .site-header {
     top: 0.6rem;
@@ -38,40 +44,48 @@
 
   .hero-title {
     position: relative;
-    z-index: 3;
+    z-index: 4;
     font-size: clamp(4.3rem, 20vw, 7rem);
   }
 
   .hero-title span:last-child {
     display: block;
+    padding-right: 0;
     text-align: right;
   }
 
-  .hero-visual-wrap {
+  .hero-campaign {
     position: relative;
     top: auto;
     left: auto;
-    width: min(88vw, 31rem);
-    margin: -0.8rem auto 1.3rem;
+    width: min(92vw, 38rem);
+    height: min(70vh, 38rem);
+    margin: -0.8rem auto 1.6rem;
     transform: none;
   }
 
-  .hero-visual-mask {
-    width: 65%;
+  .hero-campaign-main {
+    left: 25%;
+    width: 56%;
+  }
+
+  .hero-campaign-side {
+    left: 1%;
+    width: 32%;
+  }
+
+  .hero-campaign-detail {
+    right: 1%;
+    width: 25%;
   }
 
   .hero-logo-stamp {
-    left: -1%;
-    width: 34%;
-  }
-
-  .hero-product-note {
-    right: 2%;
+    left: 42%;
   }
 
   .hero-copy {
     position: relative;
-    z-index: 3;
+    z-index: 4;
   }
 
   .hero-footnote {
@@ -124,6 +138,15 @@
 
   .editorial-section {
     grid-template-columns: 1fr;
+  }
+
+  .brand-story {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .brand-story-copy {
+    padding-right: 0;
   }
 
   .editorial-visuals {
@@ -182,22 +205,49 @@
     line-height: 0.76;
   }
 
-  .hero-visual-wrap {
-    width: min(90vw, 27rem);
-    margin-top: 0;
+  .hero-campaign {
+    width: 94vw;
+    height: 31rem;
+    margin-top: 0.35rem;
   }
 
-  .hero-visual-mask {
-    width: 68%;
+  .hero-campaign-backdrop {
+    top: 4%;
+    left: 24%;
+    width: 60%;
+    height: 80%;
+  }
+
+  .hero-campaign-main {
+    top: 7%;
+    left: 25%;
+    width: 58%;
+    height: 76%;
+  }
+
+  .hero-campaign-side {
+    bottom: 5%;
+    left: 0;
+    width: 34%;
+    height: 43%;
+    border-width: 0.35rem;
+  }
+
+  .hero-campaign-detail {
+    top: 14%;
+    right: 0;
+    width: 26%;
+    height: 38%;
+    border-width: 0.3rem;
   }
 
   .hero-logo-stamp {
-    bottom: 8%;
-    left: 0;
-    width: 32%;
+    bottom: 0;
+    left: 42%;
+    width: 26%;
   }
 
-  .hero-product-note {
+  .hero-campaign-caption {
     display: none;
   }
 
@@ -238,6 +288,10 @@
     aspect-ratio: 1 / 1.05;
   }
 
+  .product-media--contain {
+    padding: 0.8rem;
+  }
+
   .editorial-visuals {
     min-height: auto;
     padding: 1.25rem 1rem 5rem;
@@ -253,13 +307,26 @@
     position: relative;
     right: auto;
     bottom: auto;
-    width: 72%;
+    width: 68%;
     margin: -4rem 0 0 auto;
   }
 
   .editorial-copy {
     min-height: 48vh;
     padding: 3rem 1.5rem;
+  }
+
+  .brand-story {
+    width: min(calc(100% - 2rem), var(--container));
+    padding-block: 5rem;
+  }
+
+  .brand-story-visual img {
+    aspect-ratio: 0.98;
+  }
+
+  .brand-story-copy h2 {
+    font-size: clamp(3.4rem, 16vw, 5.2rem);
   }
 
   .ritual-tabs {

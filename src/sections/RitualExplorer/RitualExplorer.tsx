@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import type { Product, RitualTag } from '../../types/catalog';
 
@@ -15,21 +15,21 @@ const rituals: RitualDefinition[] = [
   {
     id: 'hidratar',
     label: 'Hidratar',
-    copy: 'Suavidad y cuidado para acompañar el cabello después de la limpieza.',
-    image: '/products/acondicionador-capilar-v11.webp',
-    imageAlt: 'Acondicionador capilar BRAIMARÚ',
+    copy: 'Una pausa de cuidado para acompañar la piel y devolverle una sensación de confort.',
+    image: '/products/catalog/crema-manos-corporal.webp',
+    imageAlt: 'Crema de manos y corporal BRAIMARÚ',
   },
   {
     id: 'nutrir',
     label: 'Nutrir',
-    copy: 'Un gesto de cuidado capilar con ortiga, manzanilla y canela.',
-    image: '/products/shampoo-capilar-v11.webp',
-    imageAlt: 'Shampoo capilar BRAIMARÚ',
+    copy: 'Texturas y aceites que convierten el cuidado diario en un gesto más consciente.',
+    image: '/products/catalog/aceite-cafe-naranja.webp',
+    imageAlt: 'Aceite corporal Café y Naranja BRAIMARÚ',
   },
   {
     id: 'exfoliar',
     label: 'Exfoliar',
-    copy: 'Una textura distinta para renovar el ritual de cuidado corporal.',
+    copy: 'Un gesto de renovación para sumar textura y pausa al ritual corporal.',
     image: '/editorial/exfoliante-cafe-v11.webp',
     imageAlt: 'Detalle de la línea exfoliante de café BRAIMARÚ',
     emptyCopy: 'Explora la textura exfoliante de la línea BRAIMARÚ.',
@@ -37,14 +37,14 @@ const rituals: RitualDefinition[] = [
   {
     id: 'cuidado-corporal',
     label: 'Cuidado corporal',
-    copy: 'Aromas cálidos para acompañar un momento de cuidado propio.',
-    image: '/products/aceite-corporal-01.webp',
-    imageAlt: 'Aceite corporal BRAIMARÚ de canela y clavos de olor',
+    copy: 'Aceites y texturas para transformar la rutina en un momento dedicado a ti.',
+    image: '/products/catalog/aceite-naranja-calendula.webp',
+    imageAlt: 'Aceite corporal Caléndula y Naranja BRAIMARÚ',
   },
   {
     id: 'cuidado-capilar',
     label: 'Cuidado capilar',
-    copy: 'Shampoo, acondicionador y termoprotector dentro de una misma línea de cuidado.',
+    copy: 'Shampoo, acondicionador y termoprotector reunidos dentro de un mismo lenguaje de cuidado.',
     image: '/editorial/hair-line-v11.webp',
     imageAlt: 'Línea capilar BRAIMARÚ',
   },
@@ -56,11 +56,23 @@ interface RitualExplorerProps {
 
 export function RitualExplorer({ products }: RitualExplorerProps) {
   const [active, setActive] = useState<RitualTag>('cuidado-corporal');
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const activeTabRef = useRef<HTMLButtonElement>(null);
   const current = rituals.find((ritual) => ritual.id === active) ?? rituals[0];
   const matched = useMemo(
     () => products.filter((product) => product.ritualTags.includes(active)).slice(0, 3),
     [active, products],
   );
+
+  useEffect(() => {
+    const tabs = tabsRef.current;
+    const selectedTab = activeTabRef.current;
+
+    if (!tabs || !selectedTab || tabs.scrollWidth <= tabs.clientWidth) return;
+
+    const centeredLeft = selectedTab.offsetLeft - (tabs.clientWidth - selectedTab.offsetWidth) / 2;
+    tabs.scrollTo({ left: Math.max(0, centeredLeft), behavior: 'smooth' });
+  }, [active]);
 
   return (
     <section id="ritual" className="ritual section-shell">
@@ -75,10 +87,11 @@ export function RitualExplorer({ products }: RitualExplorerProps) {
         </p>
       </div>
 
-      <div className="ritual-tabs" role="tablist" aria-label="Necesidad de cuidado">
+      <div ref={tabsRef} className="ritual-tabs" role="tablist" aria-label="Necesidad de cuidado">
         {rituals.map((ritual) => (
           <button
             key={ritual.id}
+            ref={active === ritual.id ? activeTabRef : undefined}
             type="button"
             role="tab"
             aria-selected={active === ritual.id}

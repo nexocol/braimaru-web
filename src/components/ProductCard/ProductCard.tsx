@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { formatCopPrice } from '../../lib/format/price';
 import { buildWhatsAppUrl } from '../../lib/whatsapp';
@@ -13,6 +14,11 @@ interface ProductCardProps {
   variant?: ProductCardVariant;
 }
 
+const CONTAINED_ARTWORK_PRODUCTS = new Set([
+  'jabon-avena-miel',
+  'jabon-manzana-verde',
+]);
+
 export function ProductCard({
   product,
   phone = null,
@@ -20,28 +26,45 @@ export function ProductCard({
   variant = 'default',
 }: ProductCardProps) {
   const formattedPrice = formatCopPrice(product.priceCop);
+  const displayDescription = product.id === 'shampoo-capilar'
+    ? 'Shampoo capilar BRAIMARÚ.'
+    : product.id === 'acondicionador-capilar'
+      ? 'Acondicionador capilar BRAIMARÚ.'
+      : product.shortDescription;
+  const [imageFailed, setImageFailed] = useState(false);
+  const containedArtwork = CONTAINED_ARTWORK_PRODUCTS.has(product.id);
+  const needsCanelaArtworkCleanup = product.id === 'aceite-corporal-canela';
+
+  useEffect(() => {
+    setImageFailed(false);
+  }, [product.image]);
 
   return (
     <motion.article
       className={`product-card product-card--${variant}`}
+      data-product-id={product.id}
       initial={{ opacity: 0, y: 22 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.55 }}
       layout
     >
-      <div className="product-media">
-        {product.image ? (
+      <div
+        className={`product-media${containedArtwork ? ' product-media--contain' : ''}${needsCanelaArtworkCleanup ? ' product-media--canela' : ''}`}
+      >
+        {product.image && !imageFailed ? (
           <img
             src={product.image}
             alt={product.imageAlt}
             loading={priority ? 'eager' : 'lazy'}
             width="780"
             height="900"
+            onError={() => setImageFailed(true)}
           />
         ) : (
-          <div className="product-media-brand" aria-hidden="true">
-            <span>BRAIMARÚ</span>
+          <div className="product-media-brand" role="img" aria-label={`BRAIMARÚ — ${product.name}`}>
+            <span className="product-media-monogram">BM</span>
+            <small>BRAIMARÚ</small>
           </div>
         )}
       </div>
@@ -49,11 +72,13 @@ export function ProductCard({
       <div className="product-meta">
         <p className="eyebrow">{product.category.replaceAll('-', ' ')}</p>
         <h3>{product.name}</h3>
-        <p>{product.shortDescription}</p>
+        <p>{displayDescription}</p>
 
-        <ul className="product-benefits" aria-label={`Beneficios de ${product.name}`}>
-          {product.benefits.slice(0, 3).map((benefit) => <li key={benefit}>{benefit}</li>)}
-        </ul>
+        {product.benefits.length > 0 ? (
+          <ul className="product-benefits" aria-label={`Beneficios de ${product.name}`}>
+            {product.benefits.slice(0, 3).map((benefit) => <li key={benefit}>{benefit}</li>)}
+          </ul>
+        ) : null}
 
         <div className="product-actions">
           <span className="price-pending">{formattedPrice ?? 'Consultar precio'}</span>
